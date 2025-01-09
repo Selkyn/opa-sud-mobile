@@ -16,6 +16,8 @@ import CenterSection from "../components/CenterSection";
 import GlobalStyles from "../styles/styles";
 import CustomCardContent from "../components/CustomCardContent";
 import HeaderEntityDetails from "../components/HeaderEntityDetails";
+import IconText from "../components/IconText";
+import ListAccordion from "../components/ListAccordion";
 
 export default function PatientDetailsScreen({ route }) {
   const { id } = route.params || {};
@@ -80,28 +82,15 @@ export default function PatientDetailsScreen({ route }) {
     <View style={styles.container}>
       <HeaderEntityDetails
         entity={patient}
-        latitude= {patient?.client?.latitude || "Non disponible"}
-        longitude= {patient?.client?.longitude || "Non disponible"}
+        latitude={patient?.client?.latitude || "Non disponible"}
+        longitude={patient?.client?.longitude || "Non disponible"}
       />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         style={{ flex: 1 }}
       >
         {/*  Détails du patient */}
-        <List.Accordion
-          title="Détails du Patient"
-          left={(props) => (
-            <Avatar.Icon
-              {...props}
-              icon="dog"
-              color="white"
-              style={{
-                backgroundColor: GlobalStyles.Colors.primary,
-                marginLeft: 10,
-              }}
-            />
-          )}
-        >
+        <ListAccordion title="Détails du patient" icon="dog">
           <CustomCardContent>
             <Text variant="titleMedium">
               Nom : {patient?.name || "Non disponible"}
@@ -139,46 +128,26 @@ export default function PatientDetailsScreen({ route }) {
               )}
             </List.Section>
           </CustomCardContent>
-        </List.Accordion>
+        </ListAccordion>
 
         {/* Détails du Client */}
-        <List.Accordion
-          title="Détails du Client"
-          left={(props) => (
-            <Avatar.Icon
-              {...props}
-              icon="human"
-              color="white"
-              style={{
-                backgroundColor: GlobalStyles.Colors.primary,
-                marginLeft: 10,
-              }}
-            />
-          )}
-        >
+        <ListAccordion title="Détails du client" icon="human">
           <CustomCardContent>
             <Text variant="titleMedium">
-              Nom : {patient?.client?.lastname || "Non disponible"}
+              {patient?.client?.sex?.name === "male" ? "M." : "Mme"}{" "}
+              {patient?.client?.lastname || "Non disponible"}{" "}
+              {patient?.client?.firstname || "Non disponible"}
             </Text>
+            <IconText icon="email" text={patient?.client?.email} emailOrPhone={patient?.client?.email} />
+            <IconText icon="phone" text={patient?.client?.phone} emailOrPhone={patient?.client?.phone} />
             <Text variant="bodyMedium">
-              Prénom : {patient?.client?.firstname || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Email : {patient?.client?.email || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Téléphone : {patient?.client?.phone || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Adresse :{" "}
-              {`
-                ${patient?.client?.adress || "Non disponible"}, 
+              {`${patient?.client?.adress || "Non disponible"}, 
                 ${patient?.client?.postal || "Non disponible"} 
                 ${patient?.client?.city || "Non disponible"}
               `}
             </Text>
           </CustomCardContent>
-        </List.Accordion>
+        </ListAccordion>
 
         {/* Détail du veterinaire */}
         {patient?.vetCenter ? (

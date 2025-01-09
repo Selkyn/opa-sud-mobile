@@ -13,6 +13,8 @@ import { Card, Avatar, List } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
 import CustomCardContent from "./CustomCardContent";
 import ModalPatientsList from "./ModalPatientList";
+import IconText from "./IconText";
+import AppointmentsSection from "./AppointmentsSection";
 
 export default function CenterDetails({
   title,
@@ -20,6 +22,7 @@ export default function CenterDetails({
   icon,
   staffs,
   staffName,
+  appointment,
 }) {
   const navigation = useNavigation();
   const LeftContentAnimal = (props) => (
@@ -44,12 +47,18 @@ export default function CenterDetails({
         <Card style={styles.card}>
           <Card.Title title={title} left={LeftContentAnimal} />
           <Card.Content>
-            <Text variant="bodyMedium">Email : {entityType.email}</Text>
-            <Text variant="bodyMedium">Téléphone : {entityType.phone}</Text>
+            <IconText
+              icon="email"
+              text={entityType.email}
+              emailOrPhone={entityType.email}
+            />
+            <IconText
+              icon="phone"
+              text={entityType.phone}
+              emailOrPhone={entityType.phone}
+            />
             <Text variant="bodyMedium">
-              Adresse :{" "}
-              {`
-                ${entityType.adress || "Non disponible"}, 
+              {`${entityType.adress || "Non disponible"}, 
                 ${entityType.postal || "Non disponible"} 
                 ${entityType.city || "Non disponible"}
               `}
@@ -81,10 +90,8 @@ export default function CenterDetails({
               //     backgroundColor: GlobalStyles.Colors.backgroundLight
               //   }}
               // >
-                <CustomCardContent
-                key={staff.id}
-                style={{marginTop: 5}}>
-                  {/* <View
+              <CustomCardContent key={staff.id} style={{ marginTop: 5 }}>
+                {/* <View
                                       style={{
                                         flexDirection: "row",
                                         alignItems: "center",
@@ -99,62 +106,34 @@ export default function CenterDetails({
                         marginRight: 10,
                       }}
                     /> */}
-                  
-                  <Text
-                    variant="titleMedium"
-                    style={{ fontWeight: "bold", marginBottom: 5 }}
-                  >
-                    Dr {staff.lastname || "Non disponible"}{" "}
-                    {staff.firstname || "Non disponible"}
-                  </Text>
-                  {/* </View> */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 5,
-                    }}
-                  >
-                    <Avatar.Icon
-                      size={24}
-                      icon="email"
-                      color={GlobalStyles.Colors.primary}
-                      style={{
-                        backgroundColor: "transparent",
-                        marginRight: 10,
-                      }}
-                    />
-                    <Text variant="bodyMedium">
-                      {staff.email || "Non disponible"}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 5,
-                    }}
-                  >
-                    <Avatar.Icon
-                      size={24}
-                      icon="phone"
-                      color={GlobalStyles.Colors.primary}
-                      style={{
-                        backgroundColor: "transparent",
-                        marginRight: 10,
-                      }}
-                    />
-                    <Text variant="bodyMedium">
-                      {staff.phone || "Non disponible"}
-                    </Text>
-                  </View>
-                </CustomCardContent>
+
+                <Text
+                  variant="titleMedium"
+                  style={{ fontWeight: "bold", marginBottom: 5 }}
+                >
+                  Dr {staff.lastname || "Non disponible"}{" "}
+                  {staff.firstname || "Non disponible"}
+                </Text>
+                {/* </View> */}
+                <IconText
+                  icon="email"
+                  text={staff.email}
+                  emailOrPhone={staff.email}
+                />
+                <IconText
+                  icon="phone"
+                  text={staff.phone}
+                  emailOrPhone={staff.phone}
+                />
+              </CustomCardContent>
             ))}
           </List.Accordion>
         ) : null}
-        <ModalPatientsList
-          selectedEntity={entityType}
+        <AppointmentsSection
+          entity={entityType}
+          entityAppointments={appointment}
         />
+        <ModalPatientsList selectedEntity={entityType} />
       </ScrollView>
     </View>
   );

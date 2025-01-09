@@ -4,6 +4,7 @@ import EntityListScreen from '../screens/EntityListScreen';
 import PatientDetailsScreen from '../screens/PatientDetailsScreen';
 import VetCenterDetailsScreen from '../screens/VetCenterDetailsScreen';
 import OsteoCenterDetailsScreen from '../screens/OsteoCenterDetailsScreen';
+import CalendarScreen from '../screens/CalendarScreen';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,11 @@ export default function EntityListStack() {
         name="OsteoCenterDetails"
         component={OsteoCenterDetailsScreen}
         options={({ title: 'Détails du centre ostéopathe', headerShown: false})}
+      />
+            <Stack.Screen 
+        name="Calendar" 
+        component={CalendarScreen} 
+        options={{ title: 'Calendrier' }} 
       />
     </Stack.Navigator>
   );

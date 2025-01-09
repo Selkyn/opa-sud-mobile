@@ -52,6 +52,7 @@ export default function OsteoCenterDetails({ route }) {
                 icon="meditation"
                 staffs="osteos"
                 staffName="Ostéopathes"
+                appointment="osteoCenterAppointments"
             />
         )
 }

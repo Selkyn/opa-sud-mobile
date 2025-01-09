@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { Calendar } from "react-native-calendars";
 import axios from "axios";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CalendarScreen() {
   const [events, setEvents] = useState({}); // Pour stocker les dates marquées dans le calendrier
   const [selectedDate, setSelectedDate] = useState(""); // Date actuellement sélectionnée
   const [selectedEvents, setSelectedEvents] = useState([]); // Événements pour la date sélectionnée
+
+  const navigation = useNavigation();
 
   // Fonction pour récupérer les événements depuis le backend
   const fetchEvents = async () => {
@@ -121,6 +131,61 @@ export default function CalendarScreen() {
       });
   };
 
+  // const goToPatientDetails = (patientId) => {
+  //   navigation.navigate("PatientDetails", { id: patientId });
+  // }
+
+  // const goToUrl = (item) => {
+  //   const targetUrl = choseTargetUrl(item);
+  //   navigation.navigate(targetUrl, { id: item.patientId });
+  // }
+
+  const choseTargetUrl = (item) => {
+    if (item.eventType === "workSchedule") {
+      navigation.navigate("List", {
+        screen: "PatientDetails",
+        params: { id: item.extendedProps.patientId },
+      });
+    } else if (item.eventType === "appointment") {
+      if (item.extendedProps.entityType === "patient") {
+        navigation.navigate("List", {
+          screen: "PatientDetails",
+          params: { id: item.extendedProps.patientId },
+        });
+      } else if (item.extendedProps.entityType === "vetCenter") {
+        navigation.navigate("List", {
+          screen: "VetCenterDetails",
+          params: { id: item.extendedProps.vetCenterId },
+        });
+      } else if (item.extendedProps.entityType === "osteoCenter") {
+        navigation.navigate("List", {
+          screen: "OsteoCenterDetails",
+          params: { id: item.extendedProps.osteoCenterId },
+        });
+      }
+    }
+    return null;
+  };
+
+  const handleNavigation = (item) => {
+    const targetUrl = choseTargetUrl(item);
+    if (targetUrl) {
+      if (item.extendedProps.patientId) {
+        navigation.navigate("List", {
+          screen: "PatientDetails",
+          params: { id: item.extendedProps.patientId },
+        });
+      } else {
+        Alert.alert(
+          "Information manquante",
+          "Aucun patient associé à cet événement."
+        );
+      }
+    } else {
+      Alert.alert("Erreur", "Impossible de déterminer la destination.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Calendrier</Text>
@@ -141,6 +206,7 @@ export default function CalendarScreen() {
             data={selectedEvents}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => choseTargetUrl(item)}>
               <View
                 style={[
                   styles.eventItem,
@@ -164,10 +230,13 @@ export default function CalendarScreen() {
                     {item.extendedProps?.entityType || "Non défini"}
                   </Text>
                 )}
-                <Text style={styles.eventDetails}>
-                  {item.extendedProps?.entityName || "Non défini"}
-                </Text>
+                
+                  <Text style={styles.eventDetails}>
+                    {item.extendedProps?.entityName || "Non défini"}
+                  </Text>
+                
               </View>
+              </TouchableOpacity>
             )}
           />
         ) : (

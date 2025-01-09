@@ -5,21 +5,15 @@ import { useNavigation } from "@react-navigation/native";
 import GlobalStyles from '../styles/styles'
 import CustomCardContent from "./CustomCardContent";
 import ModalPatientsList from "./ModalPatientList";
+import ListAccordion from "./ListAccordion";
 
 export default function CenterSection({ patient, title, icon, entity, staffName, staffEntity, entityLink }) {
   const navigation = useNavigation();
 
   return (
-    <List.Accordion
+    <ListAccordion
       title={title}
-      left={(props) => (
-        <Avatar.Icon
-          {...props}
-          icon={icon}
-          color="white"
-          style={{ backgroundColor: GlobalStyles.Colors.primary, marginLeft: 10 }}
-        />
-      )}
+      icon={icon}
     >
       <CustomCardContent>
         <Text variant="titleMedium">
@@ -65,7 +59,7 @@ export default function CenterSection({ patient, title, icon, entity, staffName,
           Voir
         </Button>
       </CustomCardContent>
-    </List.Accordion>
+    </ListAccordion>
   );
 }
 

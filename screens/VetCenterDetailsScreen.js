@@ -51,6 +51,7 @@ export default function VetCenterDetails({ route }) {
                 icon="medical-bag"
                 staffs="vets"
                 staffName="Vétérinaires"
+                appointment="vetCenterAppointments"
             />
         )
 }

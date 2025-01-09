@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import "react-native-reanimated";
-import { Chip, Portal, Modal, Button } from "react-native-paper";
+import { Chip, Portal, Modal, Button, Avatar } from "react-native-paper";
+import GlobalStyles from "../styles/styles";
 
 export default function ModalPatientsList({ selectedEntity }) {
   const navigation = useNavigation();
@@ -19,11 +20,25 @@ export default function ModalPatientsList({ selectedEntity }) {
 
   return (
     <View style={styles.contentContainer}>
-      <Text style={styles.headerText}>Patients</Text>
+      {/* <Text style={styles.headerText}>Patients</Text> */}
       <View style={{ flexDirection: "row", gap: 5 }}>
-        <Chip>{`${selectedEntity.patients.length} patients`}</Chip>
-        <Button mode="contained" onPress={showModal}>
-          Voir patients
+                <Avatar.Icon
+                  size={45}
+                  icon="dog"
+                  color="white"
+                  style={{
+                    backgroundColor:GlobalStyles.Colors.primary,
+                    marginRight: 10,
+                  }}
+                />
+        <Chip 
+        style={{backgroundColor: GlobalStyles.Colors.backgroundLight}}
+        >
+          {`${selectedEntity.patients.length} patients`}</Chip>
+        <Button 
+          style={{backgroundColor: GlobalStyles.Colors.primary}}
+          mode="contained" onPress={showModal}>
+          Voir
         </Button>
       </View>
 
