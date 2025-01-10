@@ -117,6 +117,7 @@ export default function PatientDetailsScreen({ route }) {
             <List.Section>
               {patient?.Limbs && patient?.Limbs.length > 0 ? (
                 patient.Limbs.map((limb) => (
+                  // <IconText icon={"paw"} text={limb.name}/>
                   <List.Item
                     key={limb.id}
                     title={limb.name || "Non disponible"}
@@ -185,20 +186,7 @@ export default function PatientDetailsScreen({ route }) {
         <WorkSchedulesSection patient={patient} />
 
         {/* Paiement */}
-        <List.Accordion
-          title="Paiement"
-          left={(props) => (
-            <Avatar.Icon
-              {...props}
-              icon="currency-eur"
-              color="white"
-              style={{
-                backgroundColor: GlobalStyles.Colors.primary,
-                marginLeft: 10,
-              }}
-            />
-          )}
-        >
+        <ListAccordion title="Paiement" icon="currency-eur">
           <CustomCardContent>
             <Text variant="bodyMedium">
               Type : {patient?.payment?.paymentType.name || "Non disponible"}
@@ -213,7 +201,7 @@ export default function PatientDetailsScreen({ route }) {
                 : "Non disponible"}
             </Text>
           </CustomCardContent>
-        </List.Accordion>
+          </ListAccordion>
       </ScrollView>
     </View>
   );

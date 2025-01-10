@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import "react-native-reanimated";
 import { Chip, Portal, Modal, Button, Avatar } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
+import ButtonCustom from "./ButtonCustom";
 
 export default function ModalPatientsList({ selectedEntity }) {
   const navigation = useNavigation();
@@ -71,13 +72,7 @@ export default function ModalPatientsList({ selectedEntity }) {
               ))}
           </ScrollView>
 
-          <Button
-            mode="contained"
-            onPress={hideModal}
-            style={styles.closeButton}
-          >
-            Fermer
-          </Button>
+          <ButtonCustom content={"Fermer"} onPress={hideModal}/>
         </Modal>
       </Portal>
     </View>

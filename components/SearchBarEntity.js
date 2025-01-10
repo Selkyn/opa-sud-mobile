@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
-import { Searchbar } from 'react-native-paper';
-import GlobalStyles from '../styles/styles';
+import React, { useState } from "react";
+import { Searchbar } from "react-native-paper";
+import GlobalStyles from "../styles/styles";
 
-export default function SearchBarEntity({ entity, EntityName }) { 
+export default function SearchBarEntity({ value, onChangeText, entityName }) {
+  // const [searchQueryLocal, setSearchQueryLocal] = useState(searchQuery);
 
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const filteredEntity = entity.filter((entity) =>
-        entity.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-
-    return (
-        <>
-            <Searchbar
-                placeholder={`Rechercher un ${EntityName}...`}
-                value={searchTerm}
-                onChangeText={setSearchTerm}
-                style={{
-                    marginBottom: 10,
-                    backgroundColor: GlobalStyles.Colors.backgroundLight,
-                }}
-            />
-        </>
-    );
+  return (
+    <Searchbar
+      placeholder={`Rechercher un ${entityName}...`}
+      value={value}
+      onChangeText={onChangeText}
+      style={{
+        // marginTop: 16,
+        // marginHorizontal: 16,
+        width: "85%",
+        backgroundColor: "white",
+        fontSize: 12,
+        height: 40,
+      }}
+      inputStyle={{
+        fontSize: 14, // Réduit la taille du texte
+        color: "black", // Change la couleur du texte
+        paddingVertical: 0, // Réduit l'espace vertical à l'intérieur
+        alignSelf: "center", // Centre le texte
+      }}
+      elevation={5}
+    />
+  );
 }

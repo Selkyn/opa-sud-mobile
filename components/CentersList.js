@@ -4,19 +4,19 @@ import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import GlobalStyles from '../styles/styles';
 
-export const CentersList = ({ centers, title, entityType }) => {
-    const [searchTerm, setSearchTerm] = useState('');
+export const CentersList = ({ centers, title, entityType, filter }) => {
+    // const [searchTerm, setSearchTerm] = useState('');
 
     const navigation = useNavigation();
 
-    const filteredCenters = centers.filter((center) =>
-        center.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    // const filteredCenters = centers.filter((center) =>
+    //     center.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // )
 
     return (
         <View style={styles.container}>
           {/* Barre de recherche */}
-          <Searchbar
+          {/* <Searchbar
             placeholder="Rechercher un centre..."
             value={searchTerm}
             onChangeText={setSearchTerm} // Mettre à jour le terme de recherche
@@ -24,14 +24,14 @@ export const CentersList = ({ centers, title, entityType }) => {
               marginBottom: 10,
               backgroundColor: GlobalStyles.Colors.backgroundLight,
             }}
-          />
+          /> */}
     
           {/* Titre de la liste */}
-          <Text style={styles.title}>{title}</Text>
+          {/* <Text style={styles.title}>{title}</Text> */}
     
           {/* Liste des centres filtrés */}
           <ScrollView>
-            {filteredCenters.map((center) => (
+            {filter.map((center) => (
               <TouchableOpacity
                 key={center.id}
                 style={styles.centerItem}
@@ -44,6 +44,7 @@ export const CentersList = ({ centers, title, entityType }) => {
               >
                 <Text style={styles.centerName}>{center.name}</Text>
                 <Text style={styles.centerAddress}>{center.city}</Text>
+                <Text style={styles.centerAddress}>{center.contact?.name}</Text>
                 {center.patients && center.patients.length > 0 ?(
                   center.patients.length === 1 ? (
                     <Text>{`${center.patients.length} patient`}</Text>

@@ -316,7 +316,7 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Carte Interactive</Text>
+      {/* <Text style={styles.header}>Carte Interactive</Text> */}
       <MapView
         ref={mapRef}
         style={styles.map}

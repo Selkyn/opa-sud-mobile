@@ -14,14 +14,14 @@ export default function EntityListStack() {
       <Stack.Screen 
         name="EntityList" 
         component={EntityListScreen} 
-        options={{ title: 'Liste des Entités' }} 
+        options={{ title: 'Liste des Entités', headerShown: false }} 
       />
       <Stack.Screen 
         name="PatientDetails" 
         component={PatientDetailsScreen} 
         options={{ 
           title: 'Détails du Patient', 
-          headerShown: false // Cache le header
+          headerShown: false
         }} 
       
       />

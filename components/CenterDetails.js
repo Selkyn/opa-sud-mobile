@@ -44,7 +44,7 @@ export default function CenterDetails({
         contentContainerStyle={styles.scrollContent}
         style={{ flex: 1 }}
       >
-        <Card style={styles.card}>
+        <Card style={styles.card} elevation={0}>
           <Card.Title title={title} left={LeftContentAnimal} />
           <Card.Content>
             <IconText
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   card: {
-    margin: 10,
+    marginBottom: 10,
     padding: 10,
     borderRadius: 10,
     backgroundColor: GlobalStyles.Colors.backgroundLight,

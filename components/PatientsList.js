@@ -4,18 +4,19 @@ import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import GlobalStyles from '../styles/styles';
 
-export const PatientsList = ({ patients }) => {
-    const [searchTerm, setSearchTerm] = useState('');
+export const PatientsList = ({ patients, filter }) => {
+    // const [searchTerm, setSearchTerm] = useState('');
 
     const navigation = useNavigation();
 
-    const filteredPatients = patients.filter((patient) =>
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    // const filteredPatients = patients.filter((patient) =>
+    //     patient.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // )
 
     return (
         <View style={styles.container}>
           {/* Barre de recherche */}
+          {/* <View>
           <Searchbar
             placeholder="Rechercher un patient..."
             value={searchTerm}
@@ -25,16 +26,17 @@ export const PatientsList = ({ patients }) => {
               backgroundColor: GlobalStyles.Colors.backgroundLight,
             }}
           />
-    
+        </View> */}
           {/* Liste des patients filtrés */}
           <ScrollView>
-            {filteredPatients.map((patient) => (
+            {filter.map((patient) => (
               <TouchableOpacity
                 key={patient.id}
                 style={styles.patientItem}
                 onPress={() => {
                     navigation.navigate('PatientDetails', { id: patient.id }); // Naviguer vers l'écran "PatientDetail" avec l'ID
                   }}
+                  
               >
                 <Text style={styles.patientName}>{patient.name}</Text>
                 <Text style={styles.patientStatus}>
@@ -70,13 +72,14 @@ export const PatientsList = ({ patients }) => {
         padding: 12,
         marginBottom: 8,
         borderRadius: 8,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: GlobalStyles.Colors.backgroundLight,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3,
+        elevation: 0,
       },
+      
       patientName: {
         fontSize: 16,
         fontWeight: 'bold',
