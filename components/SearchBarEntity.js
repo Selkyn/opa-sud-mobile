@@ -19,10 +19,10 @@ export default function SearchBarEntity({ value, onChangeText, entityName }) {
         height: 40,
       }}
       inputStyle={{
-        fontSize: 14, // Réduit la taille du texte
-        color: "black", // Change la couleur du texte
-        paddingVertical: 0, // Réduit l'espace vertical à l'intérieur
-        alignSelf: "center", // Centre le texte
+        fontSize: 14, 
+        color: "black",
+        paddingVertical: 0,
+        alignSelf: "center",
       }}
       elevation={5}
     />

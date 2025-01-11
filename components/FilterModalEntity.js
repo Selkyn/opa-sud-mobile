@@ -8,6 +8,7 @@ import {
   Text,
   List,
   Checkbox,
+  Badge,
 } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import ButtonCustom from "./ButtonCustom";
@@ -20,28 +21,49 @@ export default function FilterModalEntity({ title, options, onSelectionChange })
   const showModal = () => setIsVisible(true);
   const hideModal = () => setIsVisible(false);
 
-  const toggleCheckbox = (id) => {
-    setSelectedItems((prev) =>
-      prev.includes(id)
-        ? prev.filter((itemId) => itemId !== id) // Retirer si déjà sélectionné
-        : [...prev, id] // Ajouter si non sélectionné
-    );
-  };
+  // const toggleCheckbox = (id) => {
+  //   setSelectedItems((prev) =>
+  //     prev.includes(id)
+  //       ? prev.filter((itemId) => itemId !== id) // Retirer si déjà sélectionné
+  //       : [...prev, id] // Ajouter si non sélectionné
+  //   );
+  // };
 
   // Appliquer le filtre et transmettre les éléments sélectionnés au parent
-  const applyFilter = () => {
-    onSelectionChange(selectedItems); // Transmet les éléments sélectionnés au parent
-    hideModal(); // Ferme la modale
+  // const applyFilter = () => {
+  //   onSelectionChange(selectedItems); // Transmet les éléments sélectionnés au parent
+  //   hideModal(); // Ferme la modale
+  // };
+
+  const toggleCheckbox = (id) => {
+    const updatedSelection = selectedItems.includes(id)
+      ? selectedItems.filter((itemId) => itemId !== id) // Retirer si déjà sélectionné
+      : [...selectedItems, id]; // Ajouter si non sélectionné
+
+    setSelectedItems(updatedSelection);
+    onSelectionChange(updatedSelection); // Appliquer immédiatement le filtre
   };
 
   return (
     <View>
+      <View>
       <IconButton
         icon="filter-variant"
         iconColor="white"
         size={24}
         onPress={showModal}
+        style={{position: 'relative'}}
       />
+      {selectedItems.length > 0 &&
+          <Badge
+          style={{
+            position: 'absolute',
+            top: -1,
+            right: 1,
+          }}
+        >{selectedItems.length}</Badge>
+      }
+      </View>
       <Portal>
         <Modal
           visible={isVisible}
@@ -64,7 +86,7 @@ export default function FilterModalEntity({ title, options, onSelectionChange })
                 </View>
               ))}
             </List.Accordion>
-            <ButtonCustom onPress={applyFilter} content="Appliquer filtre" />
+            {/* <ButtonCustom onPress={applyFilter} content="Appliquer filtre" /> */}
           </ScrollView>
         </Modal>
       </Portal>

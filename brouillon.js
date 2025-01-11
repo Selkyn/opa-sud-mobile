@@ -718,196 +718,196 @@
 
 
 
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-import { Appbar } from "react-native-paper";
-import { Avatar, Button, Card, Text, List } from "react-native-paper";
+// import React, { useEffect, useState } from "react";
+// import {
+//   View,
+//   StyleSheet,
+//   ActivityIndicator,
+//   TouchableOpacity,
+//   ScrollView,
+// } from "react-native";
+// import axios from "axios";
+// import { useNavigation } from "@react-navigation/native";
+// import { Appbar } from "react-native-paper";
+// import { Avatar, Button, Card, Text, List } from "react-native-paper";
 
-export default function PatientDetailsScreen({ route }) {
-  const { id } = route.params || {};
-  const [patient, setPatient] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// export default function PatientDetailsScreen({ route }) {
+//   const { id } = route.params || {};
+//   const [patient, setPatient] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
 
-  const navigation = useNavigation();
+//   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (id) {
-      fetchPatientDetail(id);
-    }
-  }, [id]);
+//   useEffect(() => {
+//     if (id) {
+//       fetchPatientDetail(id);
+//     }
+//   }, [id]);
 
-  const fetchPatientDetail = async (patientId) => {
-    try {
-      const response = await axios.get(
-        `http://192.168.1.79:4000/patients/${patientId}`
-      );
-      setPatient(response.data);
-    } catch (err) {
-      console.error("Erreur lors de la récupération du patient :", err);
-      setError("Impossible de récupérer les détails du patient.");
-    } finally {
-      setLoading(false);
-    }
-  };
+//   const fetchPatientDetail = async (patientId) => {
+//     try {
+//       const response = await axios.get(
+//         `http://192.168.1.79:4000/patients/${patientId}`
+//       );
+//       setPatient(response.data);
+//     } catch (err) {
+//       console.error("Erreur lors de la récupération du patient :", err);
+//       setError("Impossible de récupérer les détails du patient.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007BFF" />
-        <Text>Chargement des détails du patient...</Text>
-      </View>
-    );
-  }
+//   if (loading) {
+//     return (
+//       <View style={styles.container}>
+//         <ActivityIndicator size="large" color="#007BFF" />
+//         <Text>Chargement des détails du patient...</Text>
+//       </View>
+//     );
+//   }
 
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
+//   if (error) {
+//     return (
+//       <View style={styles.container}>
+//         <Text style={styles.errorText}>{error}</Text>
+//       </View>
+//     );
+//   }
 
-  const _goBack = () => navigation.goBack();
+//   const _goBack = () => navigation.goBack();
 
-  const _handleSearch = () => console.log("Searching");
+//   const _handleSearch = () => console.log("Searching");
 
-  const _handleMore = () => console.log("Shown more");
-  const LeftContentAnimal = (props) => <Avatar.Icon {...props} icon="dog" />;
-  const LeftContentClient = (props) => <Avatar.Icon {...props} icon="human" />;
+//   const _handleMore = () => console.log("Shown more");
+//   const LeftContentAnimal = (props) => <Avatar.Icon {...props} icon="dog" />;
+//   const LeftContentClient = (props) => <Avatar.Icon {...props} icon="human" />;
 
-  const LeftContent = (props) => <Avatar.Icon {...props} icon="dog" />;
-  return (
-    <View style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={_goBack} />
-        <Appbar.Content title={patient?.name || "Non disponible"} />
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Map", {
-              latitude: patient?.client?.latitude,
-              longitude: patient?.client?.longitude,
-              uniqueId: new Date().getTime(),
-            })
-          }
-        >
-          <Text>Voir sur la map</Text>
-        </TouchableOpacity>
-      </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.scrollContent} style={{ flex: 1 }}>
-        {/* Card: Détails du patient */}
-        <Card style={styles.card}>
-          <Card.Title
-            title="Détails du Patient"
-            // subtitle="Animal"
-            left={LeftContentAnimal}
-          />
-          <Card.Content>
-            <Text variant="titleMedium">Nom : {patient?.name}</Text>
-            <Text variant="bodyMedium">
-              Date de naissance : {patient?.birthYear}
-            </Text>
-            <Text variant="bodyMedium">
-              Espèce : {patient?.animalType.name}
-            </Text>
-            <Text variant="bodyMedium">Race : {patient?.race.name}</Text>
-            <Text variant="bodyMedium">
-              Poids : {`${patient?.weight / 1000} kg`}
-            </Text>
-            <Text variant="bodyMedium">Pathologie : {patient?.pathology}</Text>
-            <Text variant="bodyMedium">Membres affectés :</Text>
-            <List.Section>
-              {patient?.Limbs && patient?.Limbs.length > 0 ? (
-                patient.Limbs.map((limb) => (
-                  <List.Item
-                    key={limb.id}
-                    title={limb.name}
-                    left={(props) => <List.Icon {...props} icon="paw" />}
-                    style={{ flexWrap: "wrap" }}
-                  />
-                ))
-              ) : (
-                <Text>Aucun membre affecté</Text>
-              )}
-            </List.Section>
-          </Card.Content>
-        </Card>
+//   const LeftContent = (props) => <Avatar.Icon {...props} icon="dog" />;
+//   return (
+//     <View style={styles.container}>
+//       <Appbar.Header>
+//         <Appbar.BackAction onPress={_goBack} />
+//         <Appbar.Content title={patient?.name || "Non disponible"} />
+//         <TouchableOpacity
+//           onPress={() =>
+//             navigation.navigate("Map", {
+//               latitude: patient?.client?.latitude,
+//               longitude: patient?.client?.longitude,
+//               uniqueId: new Date().getTime(),
+//             })
+//           }
+//         >
+//           <Text>Voir sur la map</Text>
+//         </TouchableOpacity>
+//       </Appbar.Header>
+//       <ScrollView contentContainerStyle={styles.scrollContent} style={{ flex: 1 }}>
+//         {/* Card: Détails du patient */}
+//         <Card style={styles.card}>
+//           <Card.Title
+//             title="Détails du Patient"
+//             // subtitle="Animal"
+//             left={LeftContentAnimal}
+//           />
+//           <Card.Content>
+//             <Text variant="titleMedium">Nom : {patient?.name}</Text>
+//             <Text variant="bodyMedium">
+//               Date de naissance : {patient?.birthYear}
+//             </Text>
+//             <Text variant="bodyMedium">
+//               Espèce : {patient?.animalType.name}
+//             </Text>
+//             <Text variant="bodyMedium">Race : {patient?.race.name}</Text>
+//             <Text variant="bodyMedium">
+//               Poids : {`${patient?.weight / 1000} kg`}
+//             </Text>
+//             <Text variant="bodyMedium">Pathologie : {patient?.pathology}</Text>
+//             <Text variant="bodyMedium">Membres affectés :</Text>
+//             <List.Section>
+//               {patient?.Limbs && patient?.Limbs.length > 0 ? (
+//                 patient.Limbs.map((limb) => (
+//                   <List.Item
+//                     key={limb.id}
+//                     title={limb.name}
+//                     left={(props) => <List.Icon {...props} icon="paw" />}
+//                     style={{ flexWrap: "wrap" }}
+//                   />
+//                 ))
+//               ) : (
+//                 <Text>Aucun membre affecté</Text>
+//               )}
+//             </List.Section>
+//           </Card.Content>
+//         </Card>
 
-        <Card style={styles.card}>
-          <Card.Title
-            title="Détails du Client"
-            // subtitle="Animal"
-            left={LeftContentClient}
-          />
-          <Card.Content>
-            <Text variant="titleMedium">Nom : {patient?.client?.lastname}</Text>
-            <Text variant="bodyMedium">
-              Prénom : {patient?.client?.firstname}
-            </Text>
-            <Text variant="bodyMedium">Email : {patient?.client?.email}</Text>
-            <Text variant="bodyMedium">
-              Téléphone : {patient?.client?.phone}
-            </Text>
-            <Text variant="bodyMedium">
-              Adresse :{" "}
-              {`${patient?.client.adress}, ${patient?.client.postal} ${patient?.client.city}`}
-            </Text>
-          </Card.Content>
-        </Card>
-        <Text style={styles.title}>Détails du Patient</Text>
-        <Text>Patient ID : {id}</Text>
-        <Text>Nom du patient : {patient?.name || "Non disponible"}</Text>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Map", {
-              latitude: patient?.client?.latitude,
-              longitude: patient?.client?.longitude,
-              uniqueId: new Date().getTime(),
-            })
-          }
-        >
-          <Text>Voir sur la map</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
-  );
-}
+//         <Card style={styles.card}>
+//           <Card.Title
+//             title="Détails du Client"
+//             // subtitle="Animal"
+//             left={LeftContentClient}
+//           />
+//           <Card.Content>
+//             <Text variant="titleMedium">Nom : {patient?.client?.lastname}</Text>
+//             <Text variant="bodyMedium">
+//               Prénom : {patient?.client?.firstname}
+//             </Text>
+//             <Text variant="bodyMedium">Email : {patient?.client?.email}</Text>
+//             <Text variant="bodyMedium">
+//               Téléphone : {patient?.client?.phone}
+//             </Text>
+//             <Text variant="bodyMedium">
+//               Adresse :{" "}
+//               {`${patient?.client.adress}, ${patient?.client.postal} ${patient?.client.city}`}
+//             </Text>
+//           </Card.Content>
+//         </Card>
+//         <Text style={styles.title}>Détails du Patient</Text>
+//         <Text>Patient ID : {id}</Text>
+//         <Text>Nom du patient : {patient?.name || "Non disponible"}</Text>
+//         <TouchableOpacity
+//           onPress={() =>
+//             navigation.navigate("Map", {
+//               latitude: patient?.client?.latitude,
+//               longitude: patient?.client?.longitude,
+//               uniqueId: new Date().getTime(),
+//             })
+//           }
+//         >
+//           <Text>Voir sur la map</Text>
+//         </TouchableOpacity>
+//       </ScrollView>
+//     </View>
+//   );
+// }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
-    // padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 16,
-  },
-  card: {
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-  },
-  mapButton: {
-    margin: 20,
-    borderRadius: 5,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     // justifyContent: "center",
+//     // alignItems: "center",
+//     // padding: 16,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 16,
+//   },
+//   errorText: {
+//     color: "red",
+//     fontSize: 16,
+//   },
+//   card: {
+//     margin: 10,
+//     padding: 10,
+//     borderRadius: 10,
+//   },
+//   mapButton: {
+//     margin: 20,
+//     borderRadius: 5,
+//   },
+//   scrollContent: {
+//     padding: 16,
+//   },
+// });
 
