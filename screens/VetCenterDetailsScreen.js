@@ -49,6 +49,9 @@ export default function VetCenterDetails({ route }) {
                 title = "Centre vétérinaire"
                 entityType={vetCenter}
                 icon="medical-bag"
+                // titleAccordion="Vét"
+                // titleAccordion="Rendez-vous"
+                // iconAccordion="calendar"
                 staffs="vets"
                 staffName="Vétérinaires"
                 appointment="vetCenterAppointments"

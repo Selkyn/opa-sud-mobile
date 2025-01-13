@@ -13,8 +13,9 @@ import { Card, Avatar, List } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
 import CustomCardContent from "./CustomCardContent";
 import ModalPatientsList from "./ModalPatientList";
-import IconText from "./IconText";
+import ClickableIconText from "./ClickableIconText";
 import AppointmentsSection from "./AppointmentsSection";
+import ListAccordion from "./ListAccordion";
 
 export default function CenterDetails({
   title,
@@ -23,6 +24,8 @@ export default function CenterDetails({
   staffs,
   staffName,
   appointment,
+  iconAccordion,
+  titleAccordion,
 }) {
   const navigation = useNavigation();
   const LeftContentAnimal = (props) => (
@@ -47,12 +50,12 @@ export default function CenterDetails({
         <Card style={styles.card} elevation={0}>
           <Card.Title title={title} left={LeftContentAnimal} />
           <Card.Content>
-            <IconText
+            <ClickableIconText
               icon="email"
               text={entityType.email}
               emailOrPhone={entityType.email}
             />
-            <IconText
+            <ClickableIconText
               icon="phone"
               text={entityType.phone}
               emailOrPhone={entityType.phone}
@@ -66,20 +69,7 @@ export default function CenterDetails({
           </Card.Content>
         </Card>
         {entityType?.[staffs] && entityType?.[staffs].length > 0 ? (
-          <List.Accordion
-            title={staffName}
-            left={(props) => (
-              <Avatar.Icon
-                {...props}
-                icon="human"
-                color="white"
-                style={{
-                  backgroundColor: GlobalStyles.Colors.primary,
-                  marginLeft: 10,
-                }}
-              />
-            )}
-          >
+          <ListAccordion titleAccordion={staffName} iconAccordion="human">
             {entityType?.[staffs].map((staff) => (
               // <Card
               //   key={staff.id}
@@ -115,23 +105,25 @@ export default function CenterDetails({
                   {staff.firstname || "Non disponible"}
                 </Text>
                 {/* </View> */}
-                <IconText
+                <ClickableIconText
                   icon="email"
                   text={staff.email}
                   emailOrPhone={staff.email}
                 />
-                <IconText
+                <ClickableIconText
                   icon="phone"
                   text={staff.phone}
                   emailOrPhone={staff.phone}
                 />
               </CustomCardContent>
             ))}
-          </List.Accordion>
+          </ListAccordion>
         ) : null}
         <AppointmentsSection
           entity={entityType}
           entityAppointments={appointment}
+          iconAccordion="calendar"
+          titleAccordion="Rendez-vous"
         />
         <ModalPatientsList selectedEntity={entityType} />
       </ScrollView>

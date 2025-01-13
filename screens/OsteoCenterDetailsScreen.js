@@ -53,6 +53,8 @@ export default function OsteoCenterDetails({ route }) {
                 staffs="osteos"
                 staffName="Ostéopathes"
                 appointment="osteoCenterAppointments"
+                // iconAccordion="calendar"
+                // titleAccordion="Rendez-vous"
             />
         )
 }

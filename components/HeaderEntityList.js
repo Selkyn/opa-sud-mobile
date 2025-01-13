@@ -14,33 +14,35 @@ export default function HeaderEntityList({
   options,
   onSelectionChange,
   filteredEntities,
+  icon
 }) {
-    return (
-        <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-          paddingHorizontal: 16,
-          alignItems: "center",
-          marginTop: 16,
-        }}
-      >
-        <SearchBarEntity
-          value={value}
-          onChangeText={onChangeText}
-          entityName={entityName}
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingHorizontal: 16,
+        alignItems: "center",
+        marginTop: 16,
+      }}
+    >
+      <SearchBarEntity
+        value={value}
+        onChangeText={onChangeText}
+        entityName={entityName}
+      />
+      <View>
+        <FilterModalEntity
+          title={title}
+          options={options}
+          onSelectionChange={onSelectionChange}
+          icon={icon}
         />
-        <View>
-          <FilterModalEntity
-            title={title}
-            options={options}
-            onSelectionChange={onSelectionChange}
-          />
-          <Badge style={{ marginRight: 12, backgroundColor: "#276A99" }}>
-            {filteredEntities.length} / {entity.length}
-          </Badge>
-        </View>
+        <Badge style={{ marginRight: 12, backgroundColor: "#276A99" }}>
+          {filteredEntities.length} / {entity.length}
+        </Badge>
       </View>
-    )
+    </View>
+  );
 }

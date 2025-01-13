@@ -9,7 +9,7 @@ import {
 } from "react-native-paper";
 import axios from "axios";
 import { PatientsList } from "../components/PatientsList";
-import { CentersList } from "../components/CentersList";
+import { EntityList } from "../components/EntityList";
 import GlobalStyles from "../styles/styles";
 import SearchBarEntity from "../components/SearchBarEntity";
 import FilterModalEntity from "../components/FilterModalEntity";
@@ -26,26 +26,24 @@ export default function EntityListScreen() {
   const [checkedStatuses, setCheckedStatuses] = useState([]);
   const [checkedContacts, setCheckedContacts] = useState([]);
 
-  // useEffect(() => {
-  //   fetchPatients();
-  //   fetchVetCenters();
-  //   fetchOsteoCenters();
-  //   fetchStatus();
-  //   fetchContacts();
-  // }, []);
+  useEffect(() => {
+    fetchStatus();
+    fetchContacts();
+  }, []);
+
   useEffect(() => {
     if (selectedList === "patients") {
       fetchPatients();
       setSearchTerm("");
-      fetchStatus();
+      // fetchStatus();
     } else if (selectedList === "vetCenters") {
       fetchVetCenters();
       setSearchTerm("");
-      fetchContacts();
+      // fetchContacts();
     } else if (selectedList === "osteoCenters") {
       fetchOsteoCenters();
       setSearchTerm("");
-      fetchContacts();
+      // fetchContacts();
     }
   }, [selectedList]);
 
@@ -108,50 +106,27 @@ export default function EntityListScreen() {
   //   patient.name.toLowerCase().includes(searchTerm.toLowerCase())
   // );
 
-  // Fonction de filtrage combiné
-  const filteredPatients = patients.filter((patient) => {
-    const matchesSearchTerm = patient.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      checkedStatuses.length === 0 ||
-      checkedStatuses.includes(patient.statusId);
-    return matchesSearchTerm && matchesStatus;
-  });
-
-  const filteredVetCenters = vetCenters.filter((center) => {
-    const matchesSearchTerm = center.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesContacts =
-      checkedContacts.length === 0 ||
-      checkedContacts.includes(center.contactId);
-    return matchesSearchTerm && matchesContacts;
-  });
-
-  const filteredOsteoCenters = osteoCenters.filter((center) => {
-    const matchesSearchTerm = center.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesContacts =
-      checkedContacts.length === 0 ||
-      checkedContacts.includes(center.contactId);
-    return matchesSearchTerm && matchesContacts;
-  });
-
-  // const filteredVetCenters = vetCenters.filter((center) =>
-  //   center.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-  // const filteredOsteoCenters = osteoCenters.filter((center) =>
-  //   center.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
+  const filteredEntities = (entities, checkedFilterType, filtertypeId) => 
+    entities.filter((entity) => {
+      const matchesSearchTerm = entity.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesFilterType =
+        checkedFilterType.length === 0 ||
+        checkedFilterType.includes(entity[filtertypeId]);
+      return matchesSearchTerm && matchesFilterType;
+    });
+  
+  const filteredPatients = filteredEntities(patients, checkedStatuses, "statusId");
+  const filteredVetCenters = filteredEntities(vetCenters, checkedContacts, "contactId");
+  const filteredOsteoCenters = filteredEntities(osteoCenters, checkedContacts, "contactId");
+    
   return (
     <SafeAreaView style={styles.container}>
       <SegmentedButtons
         value={selectedList}
         onValueChange={(value) => {
-          setSearchTerm(""); // Réinitialisation de la barre de recherche
+          // setSearchTerm(""); // Réinitialisation de la barre de recherche
           setCheckedStatuses([]); // Réinitialisation des statuts sélectionnés
           setCheckedContacts([]); // Réinitialisation des contacts sélectionnés
           setSelectedList(value);
@@ -206,6 +181,7 @@ export default function EntityListScreen() {
           options={status}
           onSelectionChange={setCheckedStatuses}
           filteredEntities={filteredPatients}
+          icon="hammer"
         />
       )}
 
@@ -219,6 +195,7 @@ export default function EntityListScreen() {
           options={contacts}
           onSelectionChange={setCheckedContacts}
           filteredEntities={filteredVetCenters}
+          icon="handshake"
         />
       )}
       {selectedList === "osteoCenters" && (
@@ -231,15 +208,22 @@ export default function EntityListScreen() {
           options={contacts}
           onSelectionChange={setCheckedContacts}
           filteredEntities={filteredOsteoCenters}
+          icon="handshake"
         />
       )}
 
       <View style={styles.listContainer}>
         {selectedList === "patients" && (
-          <PatientsList patients={patients} filter={filteredPatients} />
+          <EntityList
+            centers={patients}
+            title="Patients"
+            entityType="patient"
+            filter={filteredPatients}
+          />
+          // <PatientsList patients={patients} filter={filteredPatients} />
         )}
         {selectedList === "osteoCenters" && (
-          <CentersList
+          <EntityList
             centers={osteoCenters}
             title="Centres ostéopathes"
             entityType="osteoCenter"
@@ -247,7 +231,7 @@ export default function EntityListScreen() {
           />
         )}
         {selectedList === "vetCenters" && (
-          <CentersList
+          <EntityList
             centers={vetCenters}
             title="Centres vétérinaires"
             entityType="vetCenter"

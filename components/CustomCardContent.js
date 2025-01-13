@@ -1,13 +1,13 @@
 import React from 'react';
 import { Card } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import GlobalStyles from '../styles/styles';
 
 export default function CustomCardContent({ children, style }) {
   return (
-    <Card.Content style={[styles.defaultStyle, style]}>
+    <View style={[styles.defaultStyle, style]}>
       {children}
-    </Card.Content>
+    </View>
   );
 }
 

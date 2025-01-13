@@ -16,8 +16,9 @@ import CenterSection from "../components/CenterSection";
 import GlobalStyles from "../styles/styles";
 import CustomCardContent from "../components/CustomCardContent";
 import HeaderEntityDetails from "../components/HeaderEntityDetails";
-import IconText from "../components/IconText";
+import ClickableIconText from "../components/ClickableIconText";
 import ListAccordion from "../components/ListAccordion";
+import IconText from "../components/IconText";
 
 export default function PatientDetailsScreen({ route }) {
   const { id } = route.params || {};
@@ -69,6 +70,18 @@ export default function PatientDetailsScreen({ route }) {
     );
   }
 
+  const calculateAge = (birthYear) => {
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+  };
+
+  const age =
+  patient && patient.birthYear
+    ? calculateAge(patient.birthYear)
+    : "Non spécifié";
+
+ 
+
   // const _goBack = () => navigation.goBack();
 
   // const _handleSearch = () => console.log("Searching");
@@ -89,58 +102,96 @@ export default function PatientDetailsScreen({ route }) {
         contentContainerStyle={styles.scrollContent}
         style={{ flex: 1 }}
       >
+
+
         {/*  Détails du patient */}
-        <ListAccordion title="Détails du patient" icon="dog">
+        <ListAccordion
+          titleAccordion="Détails du patient"
+          iconAccordion="dog"
+          style={styles.accordion}
+        >
           <CustomCardContent>
-            <Text variant="titleMedium">
-              Nom : {patient?.name || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Date de naissance : {patient?.birthYear || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Espèce : {patient?.animalType?.name || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Race : {patient?.race?.name || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Poids :{" "}
-              {patient?.weight
-                ? `${patient?.weight / 1000} kg`
-                : "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">
-              Pathologie : {patient?.pathology || "Non disponible"}
-            </Text>
-            <Text variant="bodyMedium">Membres affectés :</Text>
-            <List.Section>
-              {patient?.Limbs && patient?.Limbs.length > 0 ? (
-                patient.Limbs.map((limb) => (
-                  // <IconText icon={"paw"} text={limb.name}/>
-                  <List.Item
-                    key={limb.id}
-                    title={limb.name || "Non disponible"}
-                    left={(props) => <List.Icon {...props} icon="paw" />}
-                  />
-                ))
-              ) : (
-                <Text>Aucun membre affecté</Text>
-              )}
-            </List.Section>
+            {/* Informations unifiées */}
+            <View style={styles.infoBlock}>
+
+              <View style={styles.infoRow}>
+                <List.Icon
+                  icon="calendar"
+                  color="#4CAF50"
+                  style={styles.icon}
+                />
+                <Text style={styles.infoText}>
+                  Age : {age < 1 ? "Moins d'un an" : `${age} ans`}
+                </Text>
+              </View>
+              <View style={styles.separator} />
+
+              <View style={styles.infoRow}>
+                <List.Icon icon="dog" color="#42A5F5" style={styles.icon} />
+                <Text style={styles.infoText}>
+                  Espèce : {patient?.animalType?.name || "Non disponible"}
+                </Text>
+              </View>
+              <View style={styles.separator} />
+
+              <View style={styles.infoRow}>
+                <List.Icon icon="weight" color="#FBC02D" style={styles.icon} />
+                <Text style={styles.infoText}>
+                  Poids :{" "}
+                  {patient?.weight
+                    ? `${patient?.weight / 1000} kg`
+                    : "Non disponible"}
+                </Text>
+              </View>
+              <View style={styles.separator} />
+
+              <View style={styles.infoRow}>
+                <List.Icon
+                  icon="stethoscope"
+                  color="#E91E63"
+                  style={styles.icon}
+                />
+                <Text style={styles.infoText}>
+                  Pathologie : {patient?.pathology || "Non disponible"}
+                </Text>
+              </View>
+              <Text variant="bodyMedium">Membres affectés :</Text>
+              <List.Section>
+                {patient?.Limbs && patient?.Limbs.length > 0 ? (
+                  patient.Limbs.map((limb) => (
+                    // <IconText icon={"paw"} text={limb.name}/>
+                    <List.Item
+                      key={limb.id}
+                      title={limb.name || "Non disponible"}
+                      left={(props) => <List.Icon {...props} icon="paw" />}
+                    />
+                  ))
+                ) : (
+                  <Text>Aucun membre affecté</Text>
+                )}
+              </List.Section>
+            </View>
           </CustomCardContent>
         </ListAccordion>
 
         {/* Détails du Client */}
-        <ListAccordion title="Détails du client" icon="human">
+        <ListAccordion titleAccordion="Détails du client" iconAccordion="human">
           <CustomCardContent>
             <Text variant="titleMedium">
               {patient?.client?.sex?.name === "male" ? "M." : "Mme"}{" "}
               {patient?.client?.lastname || "Non disponible"}{" "}
               {patient?.client?.firstname || "Non disponible"}
             </Text>
-            <IconText icon="email" text={patient?.client?.email} emailOrPhone={patient?.client?.email} />
-            <IconText icon="phone" text={patient?.client?.phone} emailOrPhone={patient?.client?.phone} />
+            <ClickableIconText
+              icon="email"
+              text={patient?.client?.email}
+              emailOrPhone={patient?.client?.email}
+            />
+            <ClickableIconText
+              icon="phone"
+              text={patient?.client?.phone}
+              emailOrPhone={patient?.client?.phone}
+            />
             <Text variant="bodyMedium">
               {`${patient?.client?.adress || "Non disponible"}, 
                 ${patient?.client?.postal || "Non disponible"} 
@@ -154,8 +205,8 @@ export default function PatientDetailsScreen({ route }) {
         {patient?.vetCenter ? (
           <CenterSection
             patient={patient}
-            title={"Centre Vétérinaire"}
-            icon="medical-bag"
+            titleAccordion={"Centre Vétérinaire"}
+            iconAccordion="medical-bag"
             entity={"vetCenter"}
             staffName="vétérinaire"
             entityLink="VetCenterDetails"
@@ -167,8 +218,8 @@ export default function PatientDetailsScreen({ route }) {
         {patient?.osteoCenter ? (
           <CenterSection
             patient={patient}
-            title={"Centre Ostéopathe"}
-            icon="meditation"
+            titleAccordion={"Centre Ostéopathe"}
+            iconAccordion="meditation"
             entity={"osteoCenter"}
             staffName="osteopathe"
             entityLink="OsteoCenterDetails"
@@ -180,13 +231,19 @@ export default function PatientDetailsScreen({ route }) {
         <AppointmentsSection
           entity={patient}
           entityAppointments={"patientAppointments"}
+          titleAccordion="Rendez-vous"
+          iconAccordion="calendar"
         />
 
         {/* Taches */}
-        <WorkSchedulesSection patient={patient} />
+        <WorkSchedulesSection
+          patient={patient}
+          titleAccordion="Tâches"
+          iconAccordion="clipboard-list"
+        />
 
         {/* Paiement */}
-        <ListAccordion title="Paiement" icon="currency-eur">
+        <ListAccordion titleAccordion="Paiement" iconAccordion="currency-eur">
           <CustomCardContent>
             <Text variant="bodyMedium">
               Type : {patient?.payment?.paymentType.name || "Non disponible"}
@@ -201,7 +258,7 @@ export default function PatientDetailsScreen({ route }) {
                 : "Non disponible"}
             </Text>
           </CustomCardContent>
-          </ListAccordion>
+        </ListAccordion>
       </ScrollView>
     </View>
   );
@@ -231,5 +288,34 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
+  },
+  accordion: {
+    marginBottom: 16,
+    backgroundColor: "#F9F9F9", // Fond clair et doux pour l'accordéon
+    borderRadius: 12,
+    padding: 10,
+    elevation: 2,
+  },
+  infoBlock: {
+    padding: 16,
+    backgroundColor: "#FFFFFF", // Fond blanc pour un contraste
+    borderRadius: 10,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  icon: {
+    marginRight: 12,
+  },
+  infoText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#E0E0E0",
+    marginVertical: 8,
   },
 });

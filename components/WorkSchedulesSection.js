@@ -3,8 +3,9 @@ import { Card, Avatar, List, Text } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import Globalstyles from "../styles/styles";
 import CustomCardContent from "./CustomCardContent";
+import ListAccordion from "./ListAccordion";
 
-export default function WorkSchedulesSection({ patient }) {
+export default function WorkSchedulesSection({ patient, titleAccordion, iconAccordion }) {
   const formatDate = (dateString) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     return new Date(dateString).toLocaleDateString("fr-FR", options);
@@ -16,16 +17,9 @@ export default function WorkSchedulesSection({ patient }) {
   };
 
   return (
-    <List.Accordion
-      title="Tâches"
-      left={(props) => (
-        <Avatar.Icon
-          {...props}
-          icon="hammer"
-          color="white"
-          style={{ backgroundColor: Globalstyles.Colors.primary, marginLeft: 10 }}
-        />
-      )}
+    <ListAccordion
+      titleAccordion={titleAccordion}
+      iconAccordion={iconAccordion}
     >
       {patient?.workSchedules && patient.workSchedules.length > 0 ? (
         patient.workSchedules.map((workSchedule) => {
@@ -54,7 +48,7 @@ export default function WorkSchedulesSection({ patient }) {
       ) : (
         <Text style={styles.noTasksText}>Aucune tâche</Text>
       )}
-    </List.Accordion>
+    </ListAccordion>
   );
 }
 

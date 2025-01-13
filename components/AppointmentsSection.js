@@ -2,22 +2,13 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Avatar, Card, List, Text } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
+import ListAccordion from "./ListAccordion";
 
-export default function AppointmentsSection({ entity, entityAppointments }) {
+export default function AppointmentsSection({ entity, entityAppointments, titleAccordion, iconAccordion }) {
   return (
-    <List.Accordion
-      title="Rendez-vous"
-      left={(props) => (
-        <Avatar.Icon
-          {...props}
-          icon="calendar"
-          color="white"
-          style={{
-            backgroundColor: GlobalStyles.Colors.primary,
-            marginLeft: 10,
-          }}
-        />
-      )}
+    <ListAccordion
+      titleAccordion={titleAccordion}
+      iconAccordion={iconAccordion}
     >
       {entity?.[entityAppointments] && entity[entityAppointments].length > 0 ? (
         entity[entityAppointments].map((appointment) => (
@@ -41,7 +32,7 @@ export default function AppointmentsSection({ entity, entityAppointments }) {
       ) : (
         <Text style={styles.noAppointmentsText}>Aucun rendez-vous</Text>
       )}
-    </List.Accordion>
+    </ListAccordion>
   );
 }
 

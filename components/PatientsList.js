@@ -63,7 +63,7 @@ export const PatientsList = ({ filter }) => {
         </Card>
       )}
       contentContainerStyle={[styles.container, { flexGrow: 1 }]}
-      initialNumToRender={10} // Nombre initial d'éléments rendus
+      initialNumToRender={5} // Nombre initial d'éléments rendus
       windowSize={5} 
     />
   );

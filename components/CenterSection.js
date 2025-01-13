@@ -7,13 +7,13 @@ import CustomCardContent from "./CustomCardContent";
 import ModalPatientsList from "./ModalPatientList";
 import ListAccordion from "./ListAccordion";
 
-export default function CenterSection({ patient, title, icon, entity, staffName, staffEntity, entityLink }) {
+export default function CenterSection({ patient, titleAccordion, iconAccordion, entity, staffName, staffEntity, entityLink }) {
   const navigation = useNavigation();
 
   return (
     <ListAccordion
-      title={title}
-      icon={icon}
+      titleAccordion={titleAccordion}
+      iconAccordion={iconAccordion}
     >
       <CustomCardContent>
         <Text variant="titleMedium">

@@ -167,24 +167,24 @@ export default function CalendarScreen() {
     return null;
   };
 
-  const handleNavigation = (item) => {
-    const targetUrl = choseTargetUrl(item);
-    if (targetUrl) {
-      if (item.extendedProps.patientId) {
-        navigation.navigate("List", {
-          screen: "PatientDetails",
-          params: { id: item.extendedProps.patientId },
-        });
-      } else {
-        Alert.alert(
-          "Information manquante",
-          "Aucun patient associé à cet événement."
-        );
-      }
-    } else {
-      Alert.alert("Erreur", "Impossible de déterminer la destination.");
-    }
-  };
+  // const handleNavigation = (item) => {
+  //   const targetUrl = choseTargetUrl(item);
+  //   if (targetUrl) {
+  //     if (item.extendedProps.patientId) {
+  //       navigation.navigate("List", {
+  //         screen: "PatientDetails",
+  //         params: { id: item.extendedProps.patientId },
+  //       });
+  //     } else {
+  //       Alert.alert(
+  //         "Information manquante",
+  //         "Aucun patient associé à cet événement."
+  //       );
+  //     }
+  //   } else {
+  //     Alert.alert("Erreur", "Impossible de déterminer la destination.");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -220,7 +220,7 @@ export default function CalendarScreen() {
                   Début : {moment(item.start).format("HH:mm")}
                 </Text>
                 {item.end && (
-                  <Text style={styles.eventDetails}>Fin : {item.end}</Text>
+                  <Text style={styles.eventDetails}>Fin : {moment(item.end).format("HH:mm")}</Text>
                 )}
                 <Text style={styles.eventDetails}>
                   Type : {item.eventType || "Non défini"}

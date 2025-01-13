@@ -24,12 +24,13 @@ export default function ModalPatientsList({ selectedEntity }) {
       {/* <Text style={styles.headerText}>Patients</Text> */}
       <View style={{ flexDirection: "row", gap: 5 }}>
                 <Avatar.Icon
-                  size={45}
+                  size={50}
                   icon="dog"
                   color="white"
                   style={{
                     backgroundColor:GlobalStyles.Colors.primary,
                     marginRight: 10,
+                    marginLeft: 5,
                   }}
                 />
         <Chip 

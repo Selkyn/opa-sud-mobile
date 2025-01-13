@@ -9,12 +9,18 @@ import {
   List,
   Checkbox,
   Badge,
+  Avatar,
 } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import ButtonCustom from "./ButtonCustom";
 import GlobalStyles from "../styles/styles";
 
-export default function FilterModalEntity({ title, options, onSelectionChange }) {
+export default function FilterModalEntity({
+  title,
+  options,
+  onSelectionChange,
+  icon
+}) {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]); // IDs des éléments sélectionnés
 
@@ -47,22 +53,24 @@ export default function FilterModalEntity({ title, options, onSelectionChange })
   return (
     <View>
       <View>
-      <IconButton
-        icon="filter-variant"
-        iconColor="white"
-        size={24}
-        onPress={showModal}
-        style={{position: 'relative'}}
-      />
-      {selectedItems.length > 0 &&
+        <IconButton
+          icon="filter-variant"
+          iconColor="white"
+          size={24}
+          onPress={showModal}
+          style={{ position: "relative" }}
+        />
+        {selectedItems.length > 0 && (
           <Badge
-          style={{
-            position: 'absolute',
-            top: -1,
-            right: 1,
-          }}
-        >{selectedItems.length}</Badge>
-      }
+            style={{
+              position: "absolute",
+              top: -1,
+              right: 1,
+            }}
+          >
+            {selectedItems.length}
+          </Badge>
+        )}
       </View>
       <Portal>
         <Modal
@@ -71,16 +79,33 @@ export default function FilterModalEntity({ title, options, onSelectionChange })
           contentContainerStyle={styles.modalContainer}
         >
           <ScrollView>
-            <List.Accordion title={title}>
+            <List.Accordion
+              title={
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Avatar.Icon
+                    icon={icon}
+                    size={24}
+                    style={{
+                      marginRight: 10,
+                      backgroundColor: GlobalStyles.Colors.primary,
+                    }}
+                  />
+                  <Text style={{ fontSize: 16, color: "#333" }}>
+                    {title}
+                  </Text>
+                </View>
+              }
+            >
               {options.map((option) => (
                 <View key={option.id} style={styles.checkboxContainer}>
                   <Checkbox
-                  color={GlobalStyles.Colors.primary}
+                    color={GlobalStyles.Colors.primary}
                     status={
-                      selectedItems.includes(option.id) ? "checked" : "unchecked"
+                      selectedItems.includes(option.id)
+                        ? "checked"
+                        : "unchecked"
                     }
                     onPress={() => toggleCheckbox(option.id)}
-                    
                   />
                   <Text style={styles.optionText}>{option.name}</Text>
                 </View>

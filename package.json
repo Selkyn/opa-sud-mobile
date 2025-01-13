@@ -13,6 +13,7 @@
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/stack": "^7.1.1",
+    "accordion-collapse-react-native": "^1.1.1",
     "axios": "^1.7.9",
     "expo": "~52.0.23",
     "expo-location": "~18.0.4",
