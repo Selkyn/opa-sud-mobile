@@ -61,19 +61,6 @@ export default function BottomSheetMap({
         >
           {titleName}
         </Chip>
-        {/* <Text
-          style={{
-            fontSize: 18,
-            alignSelf: "flex-start",
-            backgroundColor: bgColor,
-            color: colorText,
-            paddingHorizontal: 10,
-            paddingVertical: 2,
-            borderRadius: 10,
-          }}
-        >
-          {titleName}
-        </Text> */}
       </View>
 
       <Text
@@ -114,7 +101,7 @@ export default function BottomSheetMap({
                 {selectedEntity.patients[0].name}
               </Text>
             </TouchableOpacity>
-            {/* <Chip>{selectedEntity.patients[0].name}</Chip> */}
+            
           </View>
         ) : (
           <ModalPatientsList

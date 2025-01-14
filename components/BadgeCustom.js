@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 
 export default function BadgeCustom({ title, color }) {
   return (
-    <Badge style={[styles.badgeStyle, { backgroundColor: color || GlobalStyles.Colors.primary }]}>
+    <Badge style={[styles.badgeStyle, { backgroundColor: color || GlobalStyles.Colors.greenLight }]}>
       <Text style={{ color: "white" }}>{title}</Text>
     </Badge>
   );

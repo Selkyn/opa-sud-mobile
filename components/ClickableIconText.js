@@ -4,7 +4,7 @@ import { Avatar, Text } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
 import { Linking } from "react-native";
 
-export default function IconText({ icon, text, emailOrPhone, onPressAction }) {
+export default function ClickableIconText({ icon, text, emailOrPhone, onPressAction }) {
   const makePhoneCall = (phoneNumber) => {
     const formattedNumber = `tel:${phoneNumber}`;
     Linking.openURL(formattedNumber).catch((err) =>

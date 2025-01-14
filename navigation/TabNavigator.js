@@ -5,16 +5,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'; // Import des icônes
 import CalendarScreen from '../screens/CalendarScreen';
 import MapScreen from '../screens/MapScreen';
 import EntityListStack from './EntityListStack'; // Import du Stack Navigator pour EntityList
-import TestScreen from '../screens/TestScreen';
-import GlobalStyles from '../styles/styles'
-
+import GlobalStyles from '../styles/styles';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigator() {
+export default function TabNavigator({ navigationRef }) {
   return (
-
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
@@ -48,9 +45,7 @@ export default function TabNavigator() {
         />
         <Tab.Screen name="Map" component={MapScreen} options={{ title: 'Carte' }} />
         <Tab.Screen name="Calendar" component={CalendarScreen} options={{ title: 'Calendrier' }} />
-        {/* <Tab.Screen name='Test' component={TestScreen} options ={{ tittle: 'test'}} /> */}
       </Tab.Navigator>
     </NavigationContainer>
-
   );
 }

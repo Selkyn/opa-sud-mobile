@@ -19,33 +19,11 @@ export default function CenterSection({ patient, titleAccordion, iconAccordion, 
         <Text variant="titleMedium">
           {patient?.[entity]?.name || "Non disponible"}
         </Text>
-        {/* <Text variant="bodyMedium">
-          Email : {patient?.[entity]?.email || "Non disponible"}
-        </Text>
-        <Text variant="bodyMedium">
-          Téléphone : {patient?.[entity]?.phone || "Non disponible"}
-        </Text> */}
+
         <Text variant="bodyMedium">
             {patient?.[entity]?.city || "Non disponible"}
         </Text>
-        {/* <List.Section>
-          {patient?.[entity]?.[staffEntity] &&
-          patient?.[entity]?.[staffEntity].length > 0 ? (
-            patient[entity]?.[staffEntity].map((staff) => (
-              <List.Item
-                key={staff.id}
-                title={
-                  `Dr ${staff.lastname} ${staff.firstname}` || "Non disponible"
-                }
-                left={(props) => (
-                  <List.Icon {...props} icon="stethoscope" />
-                )}
-              />
-            ))
-          ) : (
-            <Text>{`Aucun ${staffName}`}</Text>
-          )}
-        </List.Section> */}
+
         <Button
           mode="contained"
           buttonColor={GlobalStyles.Colors.primary}

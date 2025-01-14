@@ -21,7 +21,6 @@ export default function ModalPatientsList({ selectedEntity }) {
 
   return (
     <View style={styles.contentContainer}>
-      {/* <Text style={styles.headerText}>Patients</Text> */}
       <View style={{ flexDirection: "row", gap: 5 }}>
                 <Avatar.Icon
                   size={50}

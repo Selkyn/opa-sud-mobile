@@ -111,7 +111,7 @@ export default function FilterModalEntity({
                 </View>
               ))}
             </List.Accordion>
-            {/* <ButtonCustom onPress={applyFilter} content="Appliquer filtre" /> */}
+            
           </ScrollView>
         </Modal>
       </Portal>

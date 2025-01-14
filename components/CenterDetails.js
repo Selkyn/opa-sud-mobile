@@ -71,32 +71,8 @@ export default function CenterDetails({
         {entityType?.[staffs] && entityType?.[staffs].length > 0 ? (
           <ListAccordion titleAccordion={staffName} iconAccordion="human">
             {entityType?.[staffs].map((staff) => (
-              // <Card
-              //   key={staff.id}
-              //   style={{
-              //     marginTop: 10,
-              //     marginHorizontal: 10,
-              //     borderRadius: 10,
-              //     backgroundColor: GlobalStyles.Colors.backgroundLight
-              //   }}
-              // >
+       
               <CustomCardContent key={staff.id} style={{ marginTop: 5 }}>
-                {/* <View
-                                      style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginBottom: 5,
-                                      }}>
-                  <Avatar.Icon
-                      size={24}
-                      icon="stethoscope"
-                      color={GlobalStyles.Colors.primary}
-                      style={{
-                        backgroundColor: "transparent",
-                        marginRight: 10,
-                      }}
-                    /> */}
-
                 <Text
                   variant="titleMedium"
                   style={{ fontWeight: "bold", marginBottom: 5 }}
@@ -104,7 +80,7 @@ export default function CenterDetails({
                   Dr {staff.lastname || "Non disponible"}{" "}
                   {staff.firstname || "Non disponible"}
                 </Text>
-                {/* </View> */}
+               
                 <ClickableIconText
                   icon="email"
                   text={staff.email}

@@ -246,7 +246,7 @@ export default function EntityListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: GlobalStyles.Colors.primary,
+    backgroundColor: GlobalStyles.Colors.greenLight,
     paddingTop: 24,
   },
   listContainer: {

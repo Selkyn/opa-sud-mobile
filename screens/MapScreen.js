@@ -26,12 +26,14 @@ import BottomSheetMap from "../components/BottomSheetMap";
 import useFindMarker from "../hooks/useFindMarker";
 
 export default function MapScreen() {
-  const [region, setRegion] = useState({
-    latitude: 48.8566, // Paris, par défaut
-    longitude: 2.3522,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+  const [initialRegion, setInitialRegion] = useState({
+    latitude: 44.125, // Latitude d'Alès
+    longitude: 4.082,
+    latitudeDelta: 10, // Zoom rapproché
+    longitudeDelta: 10,
   });
+
+  // const [initialRegion, setInitialRegion] = useState(null);
 
   const [clientMarkers, setClientMarkers] = useState([]);
   const [vetMarkers, setVetMarkers] = useState([]);
@@ -42,13 +44,21 @@ export default function MapScreen() {
   const [selectedOsteo, setSelectedOsteo] = useState(null);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [currentPosition, setCurrentPosition] = useState(null);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [isMapReady, setIsMapReady] = useState(false);
+  // const [reloadKey, setReloadKey] = useState(0);
+
   const navigation = useNavigation();
   const mapRef = useRef(null);
   const route = useRoute();
   const { latitude, longitude, uniqueId } = route.params || {};
 
   const sheetRef = useRef(null);
+
+  const onMapReady = () => {
+    setIsMapReady(true);
+  };
 
   // Ouverture du bottom sheet
   const openSheet = (item, type) => {
@@ -65,34 +75,101 @@ export default function MapScreen() {
       setSelectedVet(null);
       setSelectedOsteo(null);
     }
+
     if (sheetRef.current) {
       sheetRef.current.expand();
-    } else {
-      console.log("sheetRef.current est null !");
     }
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowBottomSheet(true); // Affiche le BottomSheet après 1 seconde
+    }, 1000);
+
+    return () => clearTimeout(timeout); // Nettoie le timeout
+  }, []);
+  // useEffect(() => {
+
+  //   setReloadKey((prevKey) => prevKey + 1);
+  // }, [clientMarkers, vetMarkers, osteoMarkers]);
+
+  useEffect(() => {
+    if ((selectedClient || selectedVet || selectedOsteo) && sheetRef.current) {
+      if (sheetRef.current) {
+        sheetRef.current.expand();
+      }
+    }
+  }, [selectedClient, selectedVet, selectedOsteo]);
+
+  useEffect(() => {
+    setClientMarkers([]); // Réinitialise les markers
+    setVetMarkers([]);
+    setOsteoMarkers([]);
+    fetchClients(); // Recharge les données
+    fetchOsteoCenters();
+    fetchVetCenters();
+  }, []);
 
   const snapPoints = useMemo(() => ["3%", "45%"], []);
 
   useEffect(() => {
-    if (latitude && longitude && mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.005, // Zoom plus proche
-        longitudeDelta: 0.005,
-      });
+    if (latitude && longitude && isMapReady && mapRef.current) {
+      // Dézoom initial
+      mapRef.current.animateToRegion(
+        {
+          latitude,
+          longitude,
+          latitudeDelta: 2, // Dézoom
+          longitudeDelta: 0.05,
+        },
+        1000 // Durée de l'animation de dézoom
+      );
+
+      // zoom
+      setTimeout(() => {
+        mapRef.current.animateToRegion(
+          {
+            latitude,
+            longitude,
+            latitudeDelta: 0.005, // Zoom rapproché
+            longitudeDelta: 0.005,
+          },
+          1000 // Durée de l'animation de zoom
+        );
+      }, 1200);
+
+    } else if (currentPosition && isMapReady && mapRef.current) {
+      // Zoom sur la position actuelle
+      mapRef.current.animateToRegion(
+        {
+          ...currentPosition,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        },
+        1000
+      );
     }
-  }, [latitude, longitude, uniqueId]);
+  }, [latitude, longitude, uniqueId, currentPosition, isMapReady]);
+
+  // useEffect(() => {
+  //   if (latitude && longitude && mapRef.current) {
+  //     mapRef.current.animateToRegion({
+  //       latitude,
+  //       longitude,
+  //       latitudeDelta: 0.005, // Zoom plus proche
+  //       longitudeDelta: 0.005,
+  //     });
+  //   }
+  // }, [latitude, longitude, uniqueId]);
 
   useEffect(() => {
-    if (latitude && longitude) {
+    if (!isLoading && latitude && longitude) {
       const matchingMarker = clientMarkers.find(
         (marker) =>
           marker.coordinate.latitude === latitude &&
           marker.coordinate.longitude === longitude
       );
-  
+
       if (matchingMarker) {
         openSheet(matchingMarker, "client");
       }
@@ -100,13 +177,13 @@ export default function MapScreen() {
   }, [latitude, longitude, clientMarkers, uniqueId]);
 
   useEffect(() => {
-    if (latitude && longitude) {
+    if (!isLoading && latitude && longitude) {
       const matchingMarker = vetMarkers.find(
         (marker) =>
           marker.coordinate.latitude === latitude &&
           marker.coordinate.longitude === longitude
       );
-  
+
       if (matchingMarker) {
         openSheet(matchingMarker, "vet");
       }
@@ -114,18 +191,18 @@ export default function MapScreen() {
   }, [latitude, longitude, vetMarkers, uniqueId]);
 
   useEffect(() => {
-    if (latitude && longitude) {
+    if (!isLoading && latitude && longitude) {
       const matchingMarker = osteoMarkers.find(
         (marker) =>
           marker.coordinate.latitude === latitude &&
           marker.coordinate.longitude === longitude
       );
-  
+
       if (matchingMarker) {
         openSheet(matchingMarker, "osteo");
       }
     }
-  }, [latitude, longitude, osteoMarkers, uniqueId]);
+  }, [latitude, longitude, osteoMarkers, uniqueId, isLoading]);
 
   const findMarker = (marker, entity) => {
     useEffect(() => {
@@ -135,144 +212,169 @@ export default function MapScreen() {
             marker.coordinate.latitude === latitude &&
             marker.coordinate.longitude === longitude
         );
-    
+
         if (matchingMarker) {
           openSheet(matchingMarker, entity);
         }
       }
     }, [latitude, longitude, marker, uniqueId]);
-  }
+  };
 
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       Alert.alert("Erreur", "Permission refusée. La localisation est nécessaire.");
+  //       console.error("Permission refusée pour la localisation");
+  //       return;
+  //     }
+  //     let currentLocation = await Location.getCurrentPositionAsync({});
+  //     // console.log("Localisation actuelle :", currentLocation);
+  //     setLocation(currentLocation);
+  //   })();
+  // }, []);
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Erreur", "Permission refusée. La localisation est nécessaire.");
-        console.error("Permission refusée pour la localisation");
-        return;
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Erreur",
+            "Permission refusée. La localisation est nécessaire pour afficher votre position."
+          );
+          return;
+        }
+
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        setCurrentPosition({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        });
+      } catch (error) {
+        console.error("Erreur lors de l'obtention de la localisation :", error);
       }
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      console.log("Localisation actuelle :", currentLocation);
-      setLocation(currentLocation);
     })();
   }, []);
-  
-  
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await axios.get("http://192.168.1.79:4000/clients");
-        const clients = response.data;
+  // useEffect(() => {
+  //   if (currentPosition && mapRef.current) {
+  //     mapRef.current.animateToRegion({
+  //       latitude: currentPosition.latitude,
+  //       longitude: currentPosition.longitude,
+  //       latitudeDelta: 0.005,
+  //       longitudeDelta: 0.005,
+  //     }, 1000); // Animation d'une seconde
+  //   }
+  // }, [currentPosition]);
 
-        const newMarkers = clients
-          .filter(
-            (client) =>
-              client.latitude &&
-              client.longitude &&
-              client.patients &&
-              client.patients.length > 0
-          )
-          .map((client) => ({
-            id: client.id,
-            title: client?.lastname + " " + client?.firstname,
-            description: `${client.adress} ${client.postal} ${client.city}`,
-            patients: client.patients,
-            coordinate: {
-              latitude: client.latitude,
-              longitude: client.longitude,
-            },
-          }));
-        setClientMarkers(newMarkers);
-      } catch (error) {
-        Alert.alert("Erreur", "Impossible de charger les clients.");
-        console.error("Erreur lors de la récupération des clients :", error);
-      } finally {
-        setIsLoading(false); // Fin du chargement
-      }
-    };
+  // useEffect(() => {
+  const fetchClients = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.79:4000/clients");
+      const clients = response.data;
 
-    fetchClients();
-  }, []);
+      const newMarkers = clients
+        .filter(
+          (client) =>
+            client.latitude &&
+            client.longitude &&
+            client.patients &&
+            client.patients.length > 0
+        )
+        .map((client) => ({
+          id: client.id,
+          title: client?.lastname + " " + client?.firstname,
+          description: `${client.adress} ${client.postal} ${client.city}`,
+          patients: client.patients,
+          coordinate: {
+            latitude: client.latitude,
+            longitude: client.longitude,
+          },
+        }));
+      setClientMarkers(newMarkers);
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible de charger les clients.");
+      console.error("Erreur lors de la récupération des clients :", error);
+    } finally {
+      setIsLoading(false); // Fin du chargement
+    }
+  };
 
-  useEffect(() => {
-    const fetchVetCenters = async () => {
-      try {
-        const response = await axios.get(
-          "http://192.168.1.79:4000/vet-centers"
-        );
-        const vetCenters = response.data;
+  //   fetchClients();
+  // }, []);
 
-        const newVetMarkers = vetCenters
-          .filter((center) => center.latitude && center.longitude)
-          .map((center) => ({
-            id: center.id,
-            title: center.name,
-            description: `${center.adress} ${center.postal} ${center.city}`,
-            patients: center.patients,
-            coordinate: {
-              latitude: center.latitude,
-              longitude: center.longitude,
-              ...center,
-            },
-          }));
+  // useEffect(() => {
+  const fetchVetCenters = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.79:4000/vet-centers");
+      const vetCenters = response.data;
 
-        setVetMarkers(newVetMarkers);
-      } catch (error) {
-        Alert.alert(
-          "Erreur",
-          "Impossible de charger les centres vétérinaires."
-        );
-        console.error(
-          "Erreur lors de la récupération des centres vétérinaires :",
-          error
-        );
-      } finally {
-        setIsLoading(false); // Fin du chargement
-      }
-    };
+      const newVetMarkers = vetCenters
+        .filter((center) => center.latitude && center.longitude)
+        .map((center) => ({
+          id: center.id,
+          title: center.name,
+          description: `${center.adress} ${center.postal} ${center.city}`,
+          patients: center.patients,
+          coordinate: {
+            latitude: center.latitude,
+            longitude: center.longitude,
+            ...center,
+          },
+        }));
 
-    fetchVetCenters();
-  }, []);
+      setVetMarkers(newVetMarkers);
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible de charger les centres vétérinaires.");
+      console.error(
+        "Erreur lors de la récupération des centres vétérinaires :",
+        error
+      );
+    } finally {
+      setIsLoading(false); // Fin du chargement
+    }
+  };
 
-  useEffect(() => {
-    const fetchOsteoCenters = async () => {
-      try {
-        const response = await axios.get(
-          "http://192.168.1.79:4000/osteo-centers"
-        );
-        const osteoCenters = response.data;
+  //   fetchVetCenters();
+  // }, []);
 
-        const newOsteoMarkers = osteoCenters
-          .filter((center) => center.latitude && center.longitude)
-          .map((center) => ({
-            id: center.id,
-            title: center.name,
-            description: `${center.adress} ${center.postal} ${center.city}`,
-            patients: center.patients,
-            coordinate: {
-              latitude: center.latitude,
-              longitude: center.longitude,
-            },
-          }));
+  // useEffect(() => {
+  const fetchOsteoCenters = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.1.79:4000/osteo-centers"
+      );
+      const osteoCenters = response.data;
 
-        setOsteoMarkers(newOsteoMarkers);
-      } catch (error) {
-        Alert.alert(
-          "Erreur",
-          "Impossible de charger les centres d'ostéopathie."
-        );
-        console.error(
-          "Erreur lors de la récupération des centres d'ostéopathie :",
-          error
-        );
-      } finally {
-        setIsLoading(false); // Fin du chargement
-      }
-    };
+      const newOsteoMarkers = osteoCenters
+        .filter((center) => center.latitude && center.longitude)
+        .map((center) => ({
+          id: center.id,
+          title: center.name,
+          description: `${center.adress} ${center.postal} ${center.city}`,
+          patients: center.patients,
+          coordinate: {
+            latitude: center.latitude,
+            longitude: center.longitude,
+          },
+        }));
 
-    fetchOsteoCenters();
-  }, []);
+      setOsteoMarkers(newOsteoMarkers);
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible de charger les centres d'ostéopathie.");
+      console.error(
+        "Erreur lors de la récupération des centres d'ostéopathie :",
+        error
+      );
+    } finally {
+      setIsLoading(false); // Fin du chargement
+    }
+  };
+
+  //   fetchOsteoCenters();
+  // }, []);
 
   if (isLoading) {
     return (
@@ -283,120 +385,94 @@ export default function MapScreen() {
     );
   }
 
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const { latitude, longitude } = position.coords;
-  //         setUserLocation({ latitude, longitude });
-  //         setRegion({
-  //           latitude,
-  //           longitude,
-  //           latitudeDelta: 0.0922,
-  //           longitudeDelta: 0.0421,
-  //         });
-  //       },
-  //       (error) => {
-  //         Alert.alert('Erreur', "Impossible de récupérer votre position.");
-  //         console.error('Erreur de géolocalisation :', error);
-  //       },
-  //       { enableHighAccuracy: true }
-  //     );
-  //   } else {
-  //     Alert.alert('Erreur', "La géolocalisation n'est pas supportée par ce navigateur.");
-  //   }
-  // }, []);
-
-  const openGoogleMaps = (latitude, longitude) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-    Linking.openURL(url).catch((err) =>
-      console.error("Erreur lors de l'ouverture de Google Maps :", err)
-    );
-  };
-
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.header}>Carte Interactive</Text> */}
       <MapView
+        //  key={reloadKey}
         ref={mapRef}
         style={styles.map}
-        initialRegion={location ? location : region}
+        pointerEvents="box-none"
+        onMapReady={onMapReady}
+        // initialRegion={location ? location : region}
+        // region={initialRegion}
+        initialRegion={initialRegion}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+        // onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
       >
-        {clientMarkers.map((marker) => (
-          <Marker
-            key={marker.id}
-            coordinate={marker.coordinate}
-            // title={marker.title}
-            // description={marker.description}
-            // onPress={() => openGoogleMaps(marker.coordinate.latitude, marker.coordinate.longitude)}
-            onPress={() => openSheet(marker, "client")}
-          />
-        ))}
+        {clientMarkers.length > 0 &&
+          clientMarkers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={marker.coordinate}
+              onPress={() => openSheet(marker, "client")}
+            />
+          ))}
 
-        {vetMarkers.map((marker) => (
-          <Marker
-            key={marker.id}
-            coordinate={marker.coordinate}
-            // title={marker.title}
-            // description={marker.description}
-            pinColor="blue"
-            // onPress={() => openGoogleMaps(marker.coordinate.latitude, marker.coordinate.longitude)}
-            onPress={() => openSheet(marker, "vet")}
-          />
-        ))}
+        {vetMarkers.length > 0 &&
+          vetMarkers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={marker.coordinate}
+              pinColor="blue"
+              onPress={() => openSheet(marker, "vet")}
+            />
+          ))}
 
-        {osteoMarkers.map((osteoMarker) => (
-          <Marker
-            key={osteoMarker.id}
-            coordinate={osteoMarker.coordinate}
-            // title={osteoMarker.title}
-            // description={osteoMarker.description}
-            pinColor="green"
-            // onPress={() => openGoogleMaps(osteoMarker.coordinate.latitude, osteoMarker.coordinate.longitude)}
-            onPress={() => openSheet(osteoMarker, "osteo")}
-          />
-        ))}
+        {osteoMarkers.length > 0 &&
+          osteoMarkers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={marker.coordinate}
+              pinColor="green"
+              onPress={() => openSheet(marker, "osteo")}
+            />
+          ))}
       </MapView>
 
-      <BottomSheet
-        style={{ paddingHorizontal: 20 }}
-        ref={sheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-      >
-        {selectedClient ? (
-          <BottomSheetMap
-            selectedEntity={selectedClient}
-            adress={selectedClient.adress}
-            screen={"ClientCenterDetails"}
-            titleName={"Client"}
-            bgColor={"#fee2e2"}
-            colorText={"#b91c1c"}
-            showDetails={false}
-          />
-        ) : selectedVet ? (
-          <BottomSheetMap
-            selectedEntity={selectedVet}
-            screen={"VetCenterDetails"}
-            titleName={"Centre Vétérinaire"}
-            bgColor={"#dbeafe"}
-            colorText={"#1e40af"}
-            showDetails={true}
-          />
-        ) : selectedOsteo ? (
-          <BottomSheetMap
-            selectedEntity={selectedOsteo}
-            screen={"OsteoCenterDetails"}
-            titleName={"Centre Ostéopathe"}
-            bgColor={"#d1fae5"}
-            colorText={"#065f46"}
-            showDetails={true}
-          />
-        ) : null}
-      </BottomSheet>
+      {isMapReady && (
+        <BottomSheet
+          // key={`${selectedClient?.id || selectedVet?.id || selectedOsteo?.id}`}
+          style={{ paddingHorizontal: 20 }}
+          ref={sheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          // enablePanDownToClose={true}
+          // onChange={(index) => {
+          //   if (index === -1) sheetRef.current?.close(); // Gère la fermeture si nécessaire
+          // }}
+        >
+          {selectedClient ? (
+            <BottomSheetMap
+              selectedEntity={selectedClient}
+              adress={selectedClient.adress}
+              screen={"ClientCenterDetails"}
+              titleName={"Client"}
+              bgColor={"#fee2e2"}
+              colorText={"#b91c1c"}
+              showDetails={false}
+            />
+          ) : selectedVet ? (
+            <BottomSheetMap
+              selectedEntity={selectedVet}
+              screen={"VetCenterDetails"}
+              titleName={"Centre Vétérinaire"}
+              bgColor={"#dbeafe"}
+              colorText={"#1e40af"}
+              showDetails={true}
+            />
+          ) : selectedOsteo ? (
+            <BottomSheetMap
+              selectedEntity={selectedOsteo}
+              screen={"OsteoCenterDetails"}
+              titleName={"Centre Ostéopathe"}
+              bgColor={"#d1fae5"}
+              colorText={"#065f46"}
+              showDetails={true}
+            />
+          ) : null}
+        </BottomSheet>
+      )}
     </View>
   );
 }
@@ -419,5 +495,4 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
     position: "relative",
   },
-
 });
