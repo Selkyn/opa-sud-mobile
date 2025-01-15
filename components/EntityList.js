@@ -77,7 +77,6 @@ export const EntityList = ({ centers, title, entityType, filter }) => {
                 color="#ff9800"
               />
               <BadgeCustom
-                // color= {GlobalStyles.Colors.primary}
                 title={entityType === "patient"
                   ? entity.animalType?.name || "Non défini"
                   : `${entity.patients.length} patients`}
@@ -109,6 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 3,
     backgroundColor: "#fff",
+    fontFamily: "Futura-TSD"
   },
   avatar: {
     color: "white",
@@ -148,5 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#777",
     marginTop: 4,
+    fontFamily: "Futura-TSD"
   },
 });

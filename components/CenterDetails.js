@@ -42,6 +42,8 @@ export default function CenterDetails({
         entity={entityType}
         latitude={entityType?.latitude || "Non disponible"}
         longitude={entityType?.longitude || "Non disponible"}
+        phone={entityType?.phone}
+        email={entityType?.email}
       />
       <ScrollView
         contentContainerStyle={styles.scrollContent}

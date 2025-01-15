@@ -49,9 +49,12 @@ export default function ClickableIconText({ icon, text, emailOrPhone, onPressAct
           style={styles.icon}
         />
       </TouchableOpacity>
-      <Text variant="bodyMedium" style={styles.text}>
-        {text || "Non disponible"}
-      </Text>
+      {text && (
+              <Text variant="bodyMedium" style={styles.text}>
+              {text || "Non disponible"}
+            </Text>
+      )}
+
     </View>
   );
 }

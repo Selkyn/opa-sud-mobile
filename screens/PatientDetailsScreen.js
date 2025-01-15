@@ -19,6 +19,7 @@ import HeaderEntityDetails from "../components/HeaderEntityDetails";
 import ClickableIconText from "../components/ClickableIconText";
 import ListAccordion from "../components/ListAccordion";
 import IconText from "../components/IconText";
+import TextDescriptionDetails from "../components/TextDescriptionDetails";
 
 export default function PatientDetailsScreen({ route }) {
   const { id } = route.params || {};
@@ -76,11 +77,9 @@ export default function PatientDetailsScreen({ route }) {
   };
 
   const age =
-  patient && patient.birthYear
-    ? calculateAge(patient.birthYear)
-    : "Non spécifié";
-
- 
+    patient && patient.birthYear
+      ? calculateAge(patient.birthYear)
+      : "Non spécifié";
 
   // const _goBack = () => navigation.goBack();
 
@@ -95,6 +94,8 @@ export default function PatientDetailsScreen({ route }) {
     <View style={styles.container}>
       <HeaderEntityDetails
         entity={patient}
+        phone={patient?.client?.phone}
+        email={patient?.client?.email}
         latitude={patient?.client?.latitude || "Non disponible"}
         longitude={patient?.client?.longitude || "Non disponible"}
       />
@@ -102,8 +103,6 @@ export default function PatientDetailsScreen({ route }) {
         contentContainerStyle={styles.scrollContent}
         style={{ flex: 1 }}
       >
-
-
         {/*  Détails du patient */}
         <ListAccordion
           titleAccordion="Détails du patient"
@@ -113,39 +112,86 @@ export default function PatientDetailsScreen({ route }) {
           <CustomCardContent>
             {/* Informations unifiées */}
             <View style={styles.infoBlock}>
-
               <View style={styles.infoRow}>
-                <List.Icon
+                <TextDescriptionDetails
+                  contentBold="Age"
+                  contentText={age < 1 ? "Moins d'un an" : `${age} ans`}
+                  icon="birthday-cake"
+                />
+                {/* <List.Icon
                   icon="calendar"
                   color="#4CAF50"
                   style={styles.icon}
                 />
                 <Text style={styles.infoText}>
                   Age : {age < 1 ? "Moins d'un an" : `${age} ans`}
-                </Text>
+                </Text> */}
               </View>
               <View style={styles.separator} />
 
               <View style={styles.infoRow}>
-                <List.Icon icon="dog" color="#42A5F5" style={styles.icon} />
-                <Text style={styles.infoText}>
-                  Espèce : {patient?.animalType?.name || "Non disponible"}
-                </Text>
+                <TextDescriptionDetails
+                  contentBold="Espèce"
+                  contentText={patient?.animalType?.name || "Non disponible"}
+                  icon="paw"
+                />
               </View>
               <View style={styles.separator} />
 
               <View style={styles.infoRow}>
-                <List.Icon icon="weight" color="#FBC02D" style={styles.icon} />
-                <Text style={styles.infoText}>
-                  Poids :{" "}
-                  {patient?.weight
-                    ? `${patient?.weight / 1000} kg`
-                    : "Non disponible"}
-                </Text>
+                <TextDescriptionDetails
+                  contentBold="Race"
+                  contentText={patient?.race?.name || "Non disponible"}
+                  icon="dna"
+                />
               </View>
               <View style={styles.separator} />
 
               <View style={styles.infoRow}>
+                <TextDescriptionDetails
+                  contentBold="Poids"
+                  contentText={
+                    patient?.weight
+                      ? `${patient?.weight / 1000} kg`
+                      : "Non disponible"
+                  }
+                  icon="weight-hanging"
+                />
+              </View>
+              <View style={styles.separator} />
+
+              <View style={styles.infoRow}>
+                <TextDescriptionDetails
+                  contentBold="Pathologie"
+                  icon="stethoscope"
+                />
+              </View>
+              <Text>{patient.pathology || "Non disponible"}</Text>
+              <View style={styles.separator} />
+
+              <View style={styles.infoRow}>
+                <TextDescriptionDetails
+                  contentBold="Membres affectés"
+                  icon="band-aid"
+                />
+              </View>
+              {patient?.Limbs && patient?.Limbs.length > 0 ? (
+                  patient.Limbs.map((limb) => (
+                    // <IconText icon={"paw"} text={limb.name}/>
+                    <Text
+                      key={limb.id}
+                    >
+                    - {limb.name || "Non disponible"}
+                    </Text>
+                  ))
+                ) : (
+                  <Text>Aucun membre affecté</Text>
+                )}
+              <View style={styles.separator} />
+
+
+
+              {/* <View style={styles.infoRow}>
                 <List.Icon
                   icon="stethoscope"
                   color="#E91E63"
@@ -154,8 +200,8 @@ export default function PatientDetailsScreen({ route }) {
                 <Text style={styles.infoText}>
                   Pathologie : {patient?.pathology || "Non disponible"}
                 </Text>
-              </View>
-              <Text variant="bodyMedium">Membres affectés :</Text>
+              </View> */}
+              {/* <Text variant="bodyMedium">Membres affectés :</Text>
               <List.Section>
                 {patient?.Limbs && patient?.Limbs.length > 0 ? (
                   patient.Limbs.map((limb) => (
@@ -169,7 +215,7 @@ export default function PatientDetailsScreen({ route }) {
                 ) : (
                   <Text>Aucun membre affecté</Text>
                 )}
-              </List.Section>
+              </List.Section> */}
             </View>
           </CustomCardContent>
         </ListAccordion>

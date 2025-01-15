@@ -5,6 +5,8 @@ import TabNavigator from './navigation/TabNavigator';
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 import moment from "moment";
+import { useFonts } from 'expo-font';
+import { Text, View, StyleSheet } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -54,7 +56,15 @@ const fetchAndScheduleEvents = async () => {
 
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    'Champagne-Limousines': require('./assets/fonts/Champagne & Limousines.ttf'),
+    'Futura-TSD': require('./assets/fonts/FuturaStdMedium.otf')
+  });
   const navigationRef = useRef();
+
+    // Remplacer le style par défaut de Text
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.style = { fontFamily: 'Futura-TSD' };
 
   useEffect(() => {
     // Demander la permission pour les notifications

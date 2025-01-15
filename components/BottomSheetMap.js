@@ -51,7 +51,7 @@ export default function BottomSheetMap({
 
   return (
     <BottomSheetView>
-      <View style={{ width: "100%", height: 50 }}>
+      <View style={{ width: "100%", height: 50, flexDirection: "row", justifyContent:"space-between" }}>
         <Chip
           style={{
             backgroundColor: bgColor,
@@ -61,6 +61,22 @@ export default function BottomSheetMap({
         >
           {titleName}
         </Chip>
+        <View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 50,
+              backgroundColor: "#295BA6",
+              width: 45,
+              height: 45,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            title="Itinéraire"
+            onPress={() => openGoogleMaps(selectedEntity.description)}
+          >
+            <FontAwesome5 name="directions" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Text
@@ -199,7 +215,7 @@ export default function BottomSheetMap({
           </View>
         )}
 
-        <View>
+        {/* <View>
           <TouchableOpacity
             style={{
               borderRadius: 50,
@@ -214,7 +230,7 @@ export default function BottomSheetMap({
           >
             <FontAwesome5 name="directions" size={30} color="white" />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </BottomSheetView>
   );
