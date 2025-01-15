@@ -14,7 +14,6 @@ export const EntityList = ({ centers, title, entityType, filter }) => {
   // const filteredCenters = centers.filter((center) =>
   //     center.name.toLowerCase().includes(searchTerm.toLowerCase())
   // )
-
   return (
     <FlatList
       data={filter}
@@ -71,17 +70,23 @@ export const EntityList = ({ centers, title, entityType, filter }) => {
           <Card.Content>
             <View style={styles.badgeContainer}>
               <BadgeCustom
-                title={entityType === "patient"
-                  ? entity.status?.name || "Non défini"
-                  : entity.contact?.name || "Non défini"}
+                title={
+                  entityType === "patient"
+                    ? entity.status?.name || "Non défini"
+                    : entity.contact?.name || "Non défini"
+                }
                 color="#ff9800"
               />
+              
               <BadgeCustom
-                title={entityType === "patient"
-                  ? entity.animalType?.name || "Non défini"
-                  : `${entity.patients.length} patients`}
+                title={
+                  entityType === "patient"
+                    ? entity.animalType?.name === "Chien"
+                      ? entity?.race?.name || entity.animalType?.name || "Non défini"
+                      : entity.animalType?.name || "Non défini"
+                    : `${entity.patients.length} patients`
+                }
               />
-
             </View>
           </Card.Content>
         </Card>
@@ -108,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 3,
     backgroundColor: "#fff",
-    fontFamily: "Futura-TSD"
+    fontFamily: "Futura-TSD",
   },
   avatar: {
     color: "white",
@@ -148,6 +153,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#777",
     marginTop: 4,
-    fontFamily: "Futura-TSD"
+    fontFamily: "Futura-TSD",
   },
 });
