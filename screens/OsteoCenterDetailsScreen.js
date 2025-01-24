@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import CenterDetails from '../components/CenterDetails';
+import api from "../utils/api";
+
 
 export default function OsteoCenterDetails({ route }) {
     const { id } = route.params
@@ -17,7 +19,7 @@ export default function OsteoCenterDetails({ route }) {
 
       const fetchOsteoCenterDetails = async (osteoCenterId) => {
         try {
-            const response = await axios.get(`http://192.168.1.79:4000/osteo-centers/${osteoCenterId}`);
+            const response = await api.get(`/osteo-centers/${osteoCenterId}`);
             setOsteoCenter(response.data)
         } catch (err) {
             console.error('Erreur lors de la récupération du center ostéopathe :', err);

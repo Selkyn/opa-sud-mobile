@@ -54,12 +54,12 @@ export default function CenterDetails({
           <Card.Content>
             <ClickableIconText
               icon="email"
-              text={entityType.email}
+              contentText={entityType.email}
               emailOrPhone={entityType.email}
             />
             <ClickableIconText
               icon="phone"
-              text={entityType.phone}
+              contentText={entityType.phone}
               emailOrPhone={entityType.phone}
             />
             <Text variant="bodyMedium">
@@ -85,12 +85,12 @@ export default function CenterDetails({
                
                 <ClickableIconText
                   icon="email"
-                  text={staff.email}
+                  contentText={staff.email}
                   emailOrPhone={staff.email}
                 />
                 <ClickableIconText
                   icon="phone"
-                  text={staff.phone}
+                  contentText={staff.phone}
                   emailOrPhone={staff.phone}
                 />
               </CustomCardContent>

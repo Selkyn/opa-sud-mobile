@@ -2,11 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from 'react-native-paper'; // Import du Provider
 import TabNavigator from './navigation/TabNavigator';
+import AppNavigator from "./navigation/AppNavigator"; // Navigation principale
+
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 import moment from "moment";
 import { useFonts } from 'expo-font';
 import { Text, View, StyleSheet } from 'react-native';
+import { AuthProvider } from "./context/AuthContext"; // Import du contexte d'authentification
+
+
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -93,7 +99,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider>
-        <TabNavigator navigationRef={navigationRef} /> {/* Passe le ref ici */}
+      <AuthProvider>
+        {/* <TabNavigator navigationRef={navigationRef} /> Passe le ref ici */}
+        <AppNavigator />
+                </AuthProvider>
+
       </PaperProvider>
     </GestureHandlerRootView>
   );

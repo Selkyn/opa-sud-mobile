@@ -3,9 +3,9 @@ import { Card } from 'react-native-paper';
 import { StyleSheet, View } from 'react-native';
 import GlobalStyles from '../styles/styles';
 
-export default function CustomCardContent({ children, style }) {
+export default function CustomCardContent({ children}) {
   return (
-    <View style={[styles.defaultStyle, style]}>
+    <View style={[styles.defaultStyle]}>
       {children}
     </View>
   );
@@ -13,8 +13,9 @@ export default function CustomCardContent({ children, style }) {
 
 const styles = StyleSheet.create({
   defaultStyle: {
-    backgroundColor: GlobalStyles.Colors.backgroundLight,
-    padding: 10,
-    borderRadius: 5,
+    // backgroundColor: GlobalStyles.Colors.backgroundLight,
+    padding: 16,
+    backgroundColor: "#FFFFFF",
+    // borderRadius: 5,
   },
 });

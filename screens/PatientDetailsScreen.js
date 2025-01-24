@@ -20,6 +20,9 @@ import ClickableIconText from "../components/ClickableIconText";
 import ListAccordion from "../components/ListAccordion";
 import IconText from "../components/IconText";
 import TextDescriptionDetails from "../components/TextDescriptionDetails";
+import TextCustom from "../components/TextCustom";
+import api from "../utils/api";
+
 
 export default function PatientDetailsScreen({ route }) {
   const { id } = route.params || {};
@@ -37,8 +40,8 @@ export default function PatientDetailsScreen({ route }) {
 
   const fetchPatientDetail = async (patientId) => {
     try {
-      const response = await axios.get(
-        `http://192.168.1.79:4000/patients/${patientId}`
+      const response = await api.get(
+        `/patients/${patientId}`
       );
       setPatient(response.data);
     } catch (err) {
@@ -111,7 +114,7 @@ export default function PatientDetailsScreen({ route }) {
         >
           <CustomCardContent>
             {/* Informations unifiées */}
-            <View style={styles.infoBlock}>
+            {/* <View style={styles.infoBlock}> */}
               <View style={styles.infoRow}>
                 <TextDescriptionDetails
                   contentBold="Age"
@@ -166,7 +169,9 @@ export default function PatientDetailsScreen({ route }) {
                   icon="stethoscope"
                 />
               </View>
-              <Text>{patient.pathology || "Non disponible"}</Text>
+              <TextCustom
+                contentText={patient.pathology || "Non disponible"}
+              />
               <View style={styles.separator} />
 
               <View style={styles.infoRow}>
@@ -187,63 +192,45 @@ export default function PatientDetailsScreen({ route }) {
                 ) : (
                   <Text>Aucun membre affecté</Text>
                 )}
-              <View style={styles.separator} />
+              {/* <View style={styles.separator} /> */}
 
-
-
-              {/* <View style={styles.infoRow}>
-                <List.Icon
-                  icon="stethoscope"
-                  color="#E91E63"
-                  style={styles.icon}
-                />
-                <Text style={styles.infoText}>
-                  Pathologie : {patient?.pathology || "Non disponible"}
-                </Text>
-              </View> */}
-              {/* <Text variant="bodyMedium">Membres affectés :</Text>
-              <List.Section>
-                {patient?.Limbs && patient?.Limbs.length > 0 ? (
-                  patient.Limbs.map((limb) => (
-                    // <IconText icon={"paw"} text={limb.name}/>
-                    <List.Item
-                      key={limb.id}
-                      title={limb.name || "Non disponible"}
-                      left={(props) => <List.Icon {...props} icon="paw" />}
-                    />
-                  ))
-                ) : (
-                  <Text>Aucun membre affecté</Text>
-                )}
-              </List.Section> */}
-            </View>
+            {/* </View> */}
           </CustomCardContent>
         </ListAccordion>
 
         {/* Détails du Client */}
         <ListAccordion titleAccordion="Détails du client" iconAccordion="human">
           <CustomCardContent>
+            
             <Text variant="titleMedium">
               {patient?.client?.sex?.name === "male" ? "M." : "Mme"}{" "}
               {patient?.client?.lastname || "Non disponible"}{" "}
               {patient?.client?.firstname || "Non disponible"}
             </Text>
+            <View style={styles.separator} />
+            
             <ClickableIconText
               icon="email"
-              text={patient?.client?.email}
+              contentText={patient?.client?.email}
               emailOrPhone={patient?.client?.email}
             />
+            
+            <View style={styles.separator} />
             <ClickableIconText
               icon="phone"
-              text={patient?.client?.phone}
+              contentText={patient?.client?.phone}
               emailOrPhone={patient?.client?.phone}
             />
-            <Text variant="bodyMedium">
-              {`${patient?.client?.adress || "Non disponible"}, 
-                ${patient?.client?.postal || "Non disponible"} 
-                ${patient?.client?.city || "Non disponible"}
-              `}
-            </Text>
+            <View style={styles.separator} />
+            <TextCustom 
+              contentText={patient?.client?.adress || "Non disponible"}
+            />
+                        <TextCustom 
+              contentText={patient?.client?.postal|| "Non disponible"}
+            />
+                        <TextCustom 
+              contentText={patient?.client?.city || "Non disponible"}
+            />
           </CustomCardContent>
         </ListAccordion>
 
@@ -335,18 +322,18 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
   },
-  accordion: {
-    marginBottom: 16,
-    backgroundColor: "#F9F9F9", // Fond clair et doux pour l'accordéon
-    borderRadius: 12,
-    padding: 10,
-    elevation: 2,
-  },
-  infoBlock: {
-    padding: 16,
-    backgroundColor: "#FFFFFF", // Fond blanc pour un contraste
-    borderRadius: 10,
-  },
+  // accordion: {
+  //   marginBottom: 16,
+  //   backgroundColor: "#F9F9F9", // Fond clair et doux pour l'accordéon
+  //   borderRadius: 12,
+  //   padding: 10,
+  //   elevation: 2,
+  // },
+  // infoBlock: {
+  //   padding: 16,
+  //   backgroundColor: "#FFFFFF", // Fond blanc pour un contraste
+  //   // borderRadius: 10,
+  // },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -20,10 +20,12 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import api from "../utils/api";
 
 import axios from "axios";
 import BottomSheetMap from "../components/BottomSheetMap";
 import useFindMarker from "../hooks/useFindMarker";
+import { getDistance } from "geolib";
 
 export default function MapScreen() {
   const [initialRegion, setInitialRegion] = useState({
@@ -270,12 +272,37 @@ export default function MapScreen() {
   // }, [currentPosition]);
 
   // useEffect(() => {
-  const fetchClients = async () => {
-    try {
-      const response = await axios.get("http://192.168.1.79:4000/clients");
-      const clients = response.data;
 
-      const newMarkers = clients
+    const fetchRouteDistance = async (origin, destination) => {
+      const url = `https://router.project-osrm.org/route/v1/driving/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?overview=false&annotations=true&alternatives=false`;
+    
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+    
+        if (data.routes && data.routes.length > 0) {
+          const distance = data.routes[0].distance; // en mètres
+          const duration = data.routes[0].duration; // en secondes
+          return {
+            distance: (distance / 1000).toFixed(2) + " km", // Convertir en kilomètres
+            duration: (duration / 60).toFixed(2) + " min", // Convertir en minutes
+          };
+        } else {
+          throw new Error("Pas de route trouvée.");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des distances :", error);
+        return null;
+      }
+    };
+
+const fetchClients = async () => {
+  try {
+    const response = await api.get("/clients");
+    const clients = response.data;
+
+    const newMarkers = await Promise.all(
+      clients
         .filter(
           (client) =>
             client.latitude &&
@@ -283,24 +310,38 @@ export default function MapScreen() {
             client.patients &&
             client.patients.length > 0
         )
-        .map((client) => ({
-          id: client.id,
-          title: client?.lastname + " " + client?.firstname,
-          description: `${client.adress} ${client.postal} ${client.city}`,
-          patients: client.patients,
-          coordinate: {
+        .map(async (client) => {
+          const markerLocation = {
             latitude: client.latitude,
             longitude: client.longitude,
-          },
-        }));
-      setClientMarkers(newMarkers);
-    } catch (error) {
-      Alert.alert("Erreur", "Impossible de charger les clients.");
-      console.error("Erreur lors de la récupération des clients :", error);
-    } finally {
-      setIsLoading(false); // Fin du chargement
-    }
-  };
+          };
+
+          // Appel à l'API OSRM
+          const routeInfo = currentPosition
+            ? await fetchRouteDistance(currentPosition, markerLocation)
+            : { distance: "N/A", duration: "N/A" };
+
+          return {
+            id: client.id,
+            title: client?.lastname + " " + client?.firstname,
+            description: `${client.adress} ${client.postal} ${client.city}`,
+            patients: client.patients,
+            distance: routeInfo.distance, // Distance réelle via OSRM
+            duration: routeInfo.duration, // Durée réelle via OSRM
+            coordinate: markerLocation,
+          };
+        })
+    );
+
+    setClientMarkers(newMarkers);
+  } catch (error) {
+    Alert.alert("Erreur", "Impossible de charger les clients.");
+    console.error("Erreur lors de la récupération des clients :", error);
+  } finally {
+    setIsLoading(false); // Fin du chargement
+  }
+};
+
 
   //   fetchClients();
   // }, []);
@@ -308,7 +349,7 @@ export default function MapScreen() {
   // useEffect(() => {
   const fetchVetCenters = async () => {
     try {
-      const response = await axios.get("http://192.168.1.79:4000/vet-centers");
+      const response = await api.get("/vet-centers");
       const vetCenters = response.data;
 
       const newVetMarkers = vetCenters
@@ -343,8 +384,8 @@ export default function MapScreen() {
   // useEffect(() => {
   const fetchOsteoCenters = async () => {
     try {
-      const response = await axios.get(
-        "http://192.168.1.79:4000/osteo-centers"
+      const response = await api.get(
+        "/osteo-centers"
       );
       const osteoCenters = response.data;
 
@@ -372,6 +413,18 @@ export default function MapScreen() {
       setIsLoading(false); // Fin du chargement
     }
   };
+
+  // Fonction pour calculer la distance entre deux points
+const calculateDistance = (userLocation, markerLocation) => {
+  if (!userLocation || !markerLocation) return null;
+
+  return getDistance(
+    { latitude: userLocation.latitude, longitude: userLocation.longitude },
+    { latitude: markerLocation.latitude, longitude: markerLocation.longitude }
+  );
+};
+
+// const distanceToMarker = calculateDistance(currentPosition, marker.coordinate);
 
   //   fetchOsteoCenters();
   // }, []);
@@ -451,6 +504,7 @@ export default function MapScreen() {
               bgColor={"#fee2e2"}
               colorText={"#b91c1c"}
               showDetails={false}
+              distance={selectedClient.distance}
             />
           ) : selectedVet ? (
             <BottomSheetMap

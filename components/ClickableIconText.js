@@ -3,8 +3,9 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Avatar, Text } from "react-native-paper";
 import GlobalStyles from "../styles/styles";
 import { Linking } from "react-native";
+import TextCustom from "./TextCustom";
 
-export default function ClickableIconText({ icon, text, emailOrPhone, onPressAction }) {
+export default function ClickableIconText({ icon, contentText, emailOrPhone, onPressAction }) {
   const makePhoneCall = (phoneNumber) => {
     const formattedNumber = `tel:${phoneNumber}`;
     Linking.openURL(formattedNumber).catch((err) =>
@@ -18,7 +19,7 @@ export default function ClickableIconText({ icon, text, emailOrPhone, onPressAct
       console.error("Failed to open email app:", err)
     );
   };
-
+ 
   const handlePress = () => {
     if (emailOrPhone) {
       if (emailOrPhone.includes("@")) {
@@ -49,11 +50,9 @@ export default function ClickableIconText({ icon, text, emailOrPhone, onPressAct
           style={styles.icon}
         />
       </TouchableOpacity>
-      {text && (
-              <Text variant="bodyMedium" style={styles.text}>
-              {text || "Non disponible"}
-            </Text>
-      )}
+      {/* {contentText && ( */}
+      <TextCustom contentText={contentText || "Non disponible"} />
+      {/* )} */}
 
     </View>
   );
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     marginRight: 10,
   },
-  text: {
-    color: "#333",
-  },
+  // text: {
+  //   color: "#333",
+  // },
 });

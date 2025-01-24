@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import CenterDetails from '../components/CenterDetails';
+import api from "../utils/api";
+
 
 export default function VetCenterDetails({ route }) {
     const { id } = route.params
@@ -17,7 +19,7 @@ export default function VetCenterDetails({ route }) {
 
       const fetchVetCenterDetails = async (vetCenterId) => {
         try {
-            const response = await axios.get(`http://192.168.1.79:4000/vet-centers/${vetCenterId}`);
+            const response = await api.get(`/vet-centers/${vetCenterId}`);
             setVetCenter(response.data)
         } catch (err) {
             console.error('Erreur lors de la récupération du center vétérinaire :', err);

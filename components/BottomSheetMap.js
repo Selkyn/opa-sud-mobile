@@ -28,8 +28,10 @@ export default function BottomSheetMap({
   bgColor,
   colorText,
   showDetails,
+  distance
 }) {
   const navigation = useNavigation();
+  
   // const [isVisible, setIsVisible] = useState(false);
 
   // const showModal = () => setIsVisible(true);
@@ -61,6 +63,7 @@ export default function BottomSheetMap({
         >
           {titleName}
         </Chip>
+        <Text>{distance}</Text>
         <View>
           <TouchableOpacity
             style={{

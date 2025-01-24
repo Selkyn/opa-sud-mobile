@@ -16,8 +16,11 @@
     "accordion-collapse-react-native": "^1.1.1",
     "axios": "^1.7.9",
     "expo": "~52.0.23",
+    "expo-font": "~13.0.3",
     "expo-location": "~18.0.5",
+    "expo-notifications": "~0.29.12",
     "expo-status-bar": "~2.0.0",
+    "geolib": "^3.3.4",
     "metro-react-native-babel-preset": "^0.77.0",
     "moment": "^2.30.1",
     "react": "18.3.1",
@@ -32,8 +35,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-vector-icons": "^10.2.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "expo-notifications": "~0.29.12",
-    "expo-font": "~13.0.3"
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

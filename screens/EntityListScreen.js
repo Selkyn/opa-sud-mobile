@@ -14,6 +14,7 @@ import GlobalStyles from "../styles/styles";
 import SearchBarEntity from "../components/SearchBarEntity";
 import FilterModalEntity from "../components/FilterModalEntity";
 import HeaderEntityList from "../components/HeaderEntityList";
+import api from "../utils/api";
 
 export default function EntityListScreen() {
   const [selectedList, setSelectedList] = useState("patients");
@@ -49,7 +50,7 @@ export default function EntityListScreen() {
 
   const fetchPatients = async () => {
     try {
-      const response = await axios.get("http://192.168.1.79:4000/patients");
+      const response = await api.get("/patients");
       setPatients(response.data.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (error) {
       console.error("Erreur lors de la récupération des patients :", error);
@@ -58,7 +59,7 @@ export default function EntityListScreen() {
 
   const fetchVetCenters = async () => {
     try {
-      const response = await axios.get("http://192.168.1.79:4000/vet-centers");
+      const response = await api.get("/vet-centers");
       setVetCenters(response.data.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (error) {
       console.error(
@@ -70,8 +71,8 @@ export default function EntityListScreen() {
 
   const fetchOsteoCenters = async () => {
     try {
-      const response = await axios.get(
-        "http://192.168.1.79:4000/osteo-centers"
+      const response = await api.get(
+        "/osteo-centers"
       );
       setOsteoCenters(response.data.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (error) {
@@ -84,8 +85,8 @@ export default function EntityListScreen() {
 
   const fetchStatus = async () => {
     try {
-      const response = await axios.get(
-        "http://192.168.1.79:4000/patients/status"
+      const response = await api.get(
+        "/patients/status"
       );
       setStatus(response.data);
     } catch (error) {
@@ -95,7 +96,7 @@ export default function EntityListScreen() {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get("http://192.168.1.79:4000/contacts");
+      const response = await api.get("/contacts");
       setContacts(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des contacts :", error);

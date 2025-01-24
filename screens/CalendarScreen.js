@@ -21,6 +21,7 @@ import IconText from "../components/IconText";
 import GlobalStyles from "../styles/styles";
 import * as Notifications from "expo-notifications";
 import ButtonCustom from "../components/ButtonCustom";
+import api from "../utils/api";
 
 const scheduledNotifications = new Set();
 
@@ -128,11 +129,11 @@ export default function CalendarScreen() {
 
   const fetchEventsForDate = async (date) => {
     try {
-      const appointmentsResponse = await axios.get(
-        "http://192.168.1.79:4000/appointments"
+      const appointmentsResponse = await api.get(
+        "/appointments"
       );
-      const workSchedulesResponse = await axios.get(
-        "http://192.168.1.79:4000/work-schedules"
+      const workSchedulesResponse = await api.get(
+        "/work-schedules"
       );
 
       const appointments = appointmentsResponse.data;
@@ -156,11 +157,11 @@ export default function CalendarScreen() {
   // Fonction pour récupérer les événements depuis le backend
   const fetchEvents = async () => {
     try {
-      const appointmentsResponse = await axios.get(
-        "http://192.168.1.79:4000/appointments"
+      const appointmentsResponse = await api.get(
+        "/appointments"
       );
-      const workSchedulesResponse = await axios.get(
-        "http://192.168.1.79:4000/work-schedules"
+      const workSchedulesResponse = await api.get(
+        "/work-schedules"
       );
 
       const appointments = appointmentsResponse.data;
@@ -244,8 +245,8 @@ export default function CalendarScreen() {
 
     // Rechercher les événements pour cette date
     Promise.all([
-      axios.get("http://192.168.1.79:4000/appointments"),
-      axios.get("http://192.168.1.79:4000/work-schedules"),
+      api.get("/appointments"),
+      api.get("/work-schedules"),
     ])
       .then(([appointmentsResponse, workSchedulesResponse]) => {
         const appointments = appointmentsResponse.data;
